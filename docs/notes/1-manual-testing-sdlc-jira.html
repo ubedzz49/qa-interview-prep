@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual Testing Basics</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: single readable column of study notes; tables for terms, boxes for tips */
+:root{--bg:#f5f7f9;--card:#ffffff;--fg:#17212b;--mut:#56626e;--line:#dce2e8;--acc:#0b6e69;--accbg:#e0f1ef;--tip:#fff3d1;--tipfg:#5f4300;--code:#0f1b24;--codefg:#d6e5ee;--hd:'Bricolage Grotesque',system-ui,sans-serif;--bd:'Atkinson Hyperlegible',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1519;--card:#151e24;--fg:#e4ebf0;--mut:#9aa8b3;--line:#26323a;--acc:#4fd1c5;--accbg:#12302e;--tip:#3a2f10;--tipfg:#f2d789;--code:#0a1014;--codefg:#cfe2ec;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1519;--card:#151e24;--fg:#e4ebf0;--mut:#9aa8b3;--line:#26323a;--acc:#4fd1c5;--accbg:#12302e;--tip:#3a2f10;--tipfg:#f2d789;--code:#0a1014;--codefg:#cfe2ec;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.65 var(--bd);padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:760px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:700}
+h1{font:700 2rem/1.15 var(--hd);margin:.3rem 0 .6rem;text-wrap:balance}
+h2{font:700 1.4rem/1.25 var(--hd);margin:2.4rem 0 .6rem;padding-top:1.2rem;border-top:1px solid var(--line);text-wrap:balance}
+h3{font:600 1.05rem/1.3 var(--hd);margin:1.3rem 0 .3rem}
+p,ul,ol{margin:.5rem 0}
+li{margin:.25rem 0}
+.lead{color:var(--mut);font-size:1.05rem}
+code{font-family:var(--mono);font-size:.86em;background:var(--accbg);color:var(--acc);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);color:var(--codefg);padding:14px 16px;border-radius:6px;overflow-x:auto;margin:.6rem 0;line-height:1.55}
+pre code{background:none;color:inherit;padding:0;font-size:.84rem}
+.tw{overflow-x:auto;margin:.7rem 0;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700;white-space:nowrap}
+.tip{background:var(--tip);color:var(--tipfg);padding:10px 14px;border-radius:6px;margin:.8rem 0;font-size:.95rem}
+.flow{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:.7rem 0}
+.flow span{background:var(--accbg);color:var(--acc);padding:3px 10px;border-radius:99px;font-size:.88rem;font-weight:700}
+.flow i{font-style:normal;color:var(--mut)}
+.qa li{margin:.55rem 0}
+</style>
+
+</head>
+<body>
+<main>
+
+<div class="eyebrow">QA notes for freshers · Manual testing</div>
+<h1>Manual Testing Basics, Jira and Sprints</h1>
+<p class="lead">Read this once from top to bottom. Every word is explained in simple language with an example.</p>
+
+<h2>1. What is software testing?</h2>
+<p>Testing means <b>using an app like a user and checking that it works the way it should</b>. If it does not, we report the problem (called a <b>bug</b>) so developers can fix it before real users face it.</p>
+<p><b>Manual testing</b> means a person does the checking by hand: opening the app, clicking, typing, and comparing what happens with what was expected. No code is needed.</p>
+<div class="tip">Simple example: a login page. You type a correct email and password and click Login. You <b>expect</b> the Home page to open. If an error comes instead, that is a bug.</div>
+
+<h2>2. SDLC: how software is built</h2>
+<p><b>SDLC</b> means Software Development Life Cycle. It is the set of steps a team follows to take software from an idea to a live product. Testing is one step, but a good tester is involved in every step.</p>
+<div class="flow"><span>Requirement gathering</span><i>→</i><span>Planning and analysis</span><i>→</i><span>Design</span><i>→</i><span>Development (coding)</span><i>→</i><span>Testing</span><i>→</i><span>Deployment</span><i>→</i><span>Maintenance</span></div>
+<div class="tw"><table>
+<tr><th>Phase</th><th>What happens</th><th>Tester's part</th></tr>
+<tr><td>Requirement gathering</td><td>Business explains what is needed. Written as documents or user stories.</td><td>Read it, find unclear or missing points, ask questions.</td></tr>
+<tr><td>Planning and analysis</td><td>Team decides scope, time, cost, people, risks.</td><td>Prepare the test plan and estimate effort.</td></tr>
+<tr><td>Design</td><td>Screens (UI) and system structure are designed.</td><td>Review the design, start writing test scenarios.</td></tr>
+<tr><td>Development</td><td>Developers write the code.</td><td>Write test cases, prepare test data and environment.</td></tr>
+<tr><td>Testing</td><td>The built app is tested and bugs are fixed.</td><td>Execute tests, report and retest bugs.</td></tr>
+<tr><td>Deployment</td><td>App goes live for users (release).</td><td>Smoke test on production after release.</td></tr>
+<tr><td>Maintenance</td><td>Fixing issues and adding new features after release.</td><td>Regression testing for every change.</td></tr>
+</table></div>
+<div class="tip">SDLC vs STLC: SDLC is the whole journey of building software. STLC is only the testing journey inside it.</div>
+
+<h3>SDLC models (ways of following the steps)</h3>
+<div class="tw"><table>
+<tr><th>Model</th><th>How it works</th><th>Good / Bad</th></tr>
+<tr><td>Waterfall</td><td>One phase after another, no going back. Testing starts only after coding is fully finished.</td><td>Simple and clear. But bugs are found late and changes are hard.</td></tr>
+<tr><td>V-Model</td><td>Every development phase has a matching testing phase, planned at the same time.</td><td>Testing starts early. But still rigid like Waterfall.</td></tr>
+<tr><td>Iterative / Incremental</td><td>Build the product in small parts, one after another, improving each time.</td><td>Early working parts. Needs good planning of parts.</td></tr>
+<tr><td>Spiral</td><td>Repeated cycles, each one with risk analysis.</td><td>Good for big risky projects. Costly and complex.</td></tr>
+<tr><td>Agile</td><td>Short sprints (1 to 4 weeks). Design, code and test together. Feedback every sprint.</td><td>Flexible, fast feedback. Needs strong teamwork. Most companies use this today.</td></tr>
+</table></div>
+<h3>V-Model: which testing matches which phase</h3>
+<div class="tw"><table>
+<tr><th>Development side</th><th>Testing side</th></tr>
+<tr><td>Requirement analysis</td><td>Acceptance testing (UAT)</td></tr>
+<tr><td>System design</td><td>System testing</td></tr>
+<tr><td>Architecture design</td><td>Integration testing</td></tr>
+<tr><td>Module design and coding</td><td>Unit testing</td></tr>
+</table></div>
+
+<h2>3. Important words you must know</h2>
+<div class="tw"><table>
+<tr><th>Term</th><th>Meaning in simple words</th></tr>
+<tr><td>Bug / Defect</td><td>Something that does not work as expected.</td></tr>
+<tr><td>Requirement</td><td>What the app should do, as written by the business or product team.</td></tr>
+<tr><td>Test scenario</td><td>One-line idea of what to test. Example: "Check login".</td></tr>
+<tr><td>Test case</td><td>Step-by-step instructions with expected result. Example: enter valid email, enter valid password, click Login, home page opens.</td></tr>
+<tr><td>Test data</td><td>The values you type in while testing (emails, passwords, amounts).</td></tr>
+<tr><td>Test suite</td><td>A group of related test cases, such as all login test cases.</td></tr>
+<tr><td>Test plan</td><td>A document saying what to test, who tests, when, and with which tools.</td></tr>
+<tr><td>Build</td><td>A new version of the app given to testers.</td></tr>
+<tr><td>Environment</td><td>The place where the app runs: Dev (developers), QA/Test (testers), Staging (final check, like real), Production (real users).</td></tr>
+<tr><td>Expected / Actual</td><td>Expected = what should happen. Actual = what really happened. A difference means a bug.</td></tr>
+<tr><td>Verification</td><td>"Are we building the product right?" Checking documents and design, without running the app.</td></tr>
+<tr><td>Validation</td><td>"Are we building the right product?" Running the app to see that it meets the user's need.</td></tr>
+<tr><td>QA vs QC</td><td>QA (Quality Assurance) is about the process, to prevent bugs. QC (Quality Control) is about checking the product, to find bugs. Testing is part of QC.</td></tr>
+</table></div>
+
+<h2>4. Types of testing</h2>
+<div class="tw"><table>
+<tr><th>Type</th><th>What it means</th></tr>
+<tr><td>Smoke testing</td><td>Quick check of the main features right after a new build. If basic things fail, we reject the build. Like checking whether a machine switches on.</td></tr>
+<tr><td>Sanity testing</td><td>Small, focused check after a bug fix or small change, to see that the change works.</td></tr>
+<tr><td>Regression testing</td><td>Checking that old working features still work after new changes. This is the work that is later automated.</td></tr>
+<tr><td>Retesting</td><td>Running the same failed test again after the developer fixes the bug.</td></tr>
+<tr><td>Functional testing</td><td>Checks what the app does (login, search, payment).</td></tr>
+<tr><td>Non-functional testing</td><td>Checks how well it does it: speed (performance), safety (security), ease of use (usability), many devices (compatibility).</td></tr>
+<tr><td>Exploratory testing</td><td>Testing without fixed steps, using your own thinking and curiosity to find bugs.</td></tr>
+<tr><td>UAT</td><td>User Acceptance Testing. The client or business user checks the app before go-live.</td></tr>
+<tr><td>Black box / White box</td><td>Black box: you test without seeing the code (testers do this). White box: you test knowing the code (developers do this).</td></tr>
+</table></div>
+
+<h3>Levels of testing (small to big)</h3>
+<div class="flow"><span>Unit</span><i>→</i><span>Integration</span><i>→</i><span>System</span><i>→</i><span>UAT</span></div>
+<ul>
+<li><b>Unit:</b> developer tests one small function.</li>
+<li><b>Integration:</b> checks that two parts work together, for example the app and the database.</li>
+<li><b>System:</b> tester checks the whole app end to end.</li>
+<li><b>UAT:</b> business user approves it.</li>
+</ul>
+
+<h2>5. STLC: steps a tester follows</h2>
+<p>STLC means Software Testing Life Cycle.</p>
+<div class="flow"><span>Understand requirements</span><i>→</i><span>Plan</span><i>→</i><span>Write test cases</span><i>→</i><span>Set up environment</span><i>→</i><span>Execute tests</span><i>→</i><span>Report bugs</span><i>→</i><span>Close and report</span></div>
+
+<h2>6. Writing a test case</h2>
+<div class="tw"><table>
+<tr><th>Field</th><th>Example</th></tr>
+<tr><td>Test case ID</td><td>TC_LOGIN_01</td></tr>
+<tr><td>Title</td><td>Login with valid email and password</td></tr>
+<tr><td>Precondition</td><td>User account already exists</td></tr>
+<tr><td>Steps</td><td>1. Open login page. 2. Enter valid email. 3. Enter valid password. 4. Click Login.</td></tr>
+<tr><td>Expected result</td><td>User lands on the Home page</td></tr>
+<tr><td>Actual result</td><td>Filled while testing</td></tr>
+<tr><td>Status</td><td>Pass or Fail</td></tr>
+</table></div>
+<div class="tip">Good test cases cover <b>positive</b> (valid input), <b>negative</b> (wrong input) and <b>edge</b> (limits, like empty or very long text) situations.</div>
+
+<h2>7. Bug report and bug life cycle</h2>
+<p>A good bug report lets the developer repeat the problem without asking you anything. Include:</p>
+<ul>
+<li><b>Title:</b> short and clear, e.g. "Login button does nothing when password has a space".</li>
+<li><b>Steps to reproduce:</b> exact steps.</li>
+<li><b>Expected and actual result.</b></li>
+<li><b>Environment:</b> browser, device, build number.</li>
+<li><b>Severity and priority.</b></li>
+<li><b>Attachment:</b> screenshot or video.</li>
+</ul>
+<h3>Severity vs priority</h3>
+<div class="tw"><table>
+<tr><th></th><th>Meaning</th><th>Example</th></tr>
+<tr><td>Severity</td><td>How badly the bug hurts the app (decided by tester).</td><td>App crashes on payment: High.</td></tr>
+<tr><td>Priority</td><td>How soon it must be fixed (decided by business).</td><td>Company logo spelled wrong on home page: Low severity, High priority.</td></tr>
+</table></div>
+<h3>Bug life cycle</h3>
+<div class="flow"><span>New</span><i>→</i><span>Assigned</span><i>→</i><span>In progress</span><i>→</i><span>Fixed</span><i>→</i><span>Retest</span><i>→</i><span>Closed</span></div>
+<p>If the bug still happens after the fix, status becomes <b>Reopened</b>. If it is not really a bug, it can be <b>Rejected</b>. If it will be fixed later, it is <b>Deferred</b>.</p>
+
+<h2>8. More types of testing</h2>
+<div class="tw"><table>
+<tr><th>Type</th><th>What it checks</th></tr>
+<tr><td>Performance</td><td>Speed and stability. <b>Load</b>: expected number of users. <b>Stress</b>: far more than expected, to see when it breaks. <b>Spike</b>: sudden jump of users. <b>Endurance</b>: long running time. Tool: JMeter.</td></tr>
+<tr><td>Security</td><td>Can data be stolen or misused? Login rules, SQL injection, access control.</td></tr>
+<tr><td>Usability</td><td>Is it easy and clear for a normal user?</td></tr>
+<tr><td>Compatibility</td><td>Works on different browsers, devices, screen sizes and operating systems (cross-browser testing).</td></tr>
+<tr><td>Accessibility</td><td>Usable by people with disabilities, for example screen reader support and enough colour contrast.</td></tr>
+<tr><td>Localization</td><td>Correct language, date, currency and number format for each country.</td></tr>
+<tr><td>Database testing</td><td>Data saved in the database is correct and complete.</td></tr>
+<tr><td>Ad-hoc</td><td>Random testing without planning or documents.</td></tr>
+<tr><td>Monkey testing</td><td>Random clicks and inputs to check the app does not crash.</td></tr>
+<tr><td>Alpha / Beta</td><td>Alpha: tested inside the company by internal users. Beta: given to a small group of real users outside before the final release.</td></tr>
+<tr><td>Static vs dynamic</td><td>Static: reviewing documents and code without running the app. Dynamic: running the app and testing it.</td></tr>
+<tr><td>End-to-end</td><td>Tests a full user journey across all parts, for example: sign up, search, add to cart, pay.</td></tr>
+</table></div>
+
+<h2>9. Test documents and measuring quality</h2>
+<h3>Entry and exit criteria</h3>
+<ul>
+<li><b>Entry criteria:</b> conditions needed to <b>start</b> testing. Example: requirements are clear, build is deployed, test cases are ready, smoke test passed.</li>
+<li><b>Exit criteria:</b> conditions to <b>stop</b> testing. Example: all planned tests run, no open critical or high bugs, pass percentage above the agreed number.</li>
+</ul>
+<h3>Requirement Traceability Matrix (RTM)</h3>
+<p>A table that links each requirement to its test cases and bugs. It proves that <b>every requirement is tested</b> and nothing is missed.</p>
+<div class="tw"><table>
+<tr><th>Requirement</th><th>Test cases</th><th>Status</th><th>Bug</th></tr>
+<tr><td>REQ-01 User can log in</td><td>TC_LOGIN_01 to 08</td><td>Passed</td><td>None</td></tr>
+<tr><td>REQ-02 User can reset password</td><td>TC_PWD_01 to 06</td><td>1 failed</td><td>BUG-45</td></tr>
+</table></div>
+<h3>Test environment and test data</h3>
+<p>The test environment should be as close to real (production) as possible. Test data should be realistic but <b>never real customer data</b>. Prepare it before starting.</p>
+<h3>Test closure and reports</h3>
+<p>At the end the tester shares a summary: how many tests were planned, run, passed, failed, which bugs are still open, and whether the build is safe to release.</p>
+<h3>Common measures (metrics)</h3>
+<div class="tw"><table>
+<tr><th>Metric</th><th>Meaning</th></tr>
+<tr><td>Test case pass %</td><td>Passed tests divided by executed tests, times 100.</td></tr>
+<tr><td>Defect density</td><td>Number of bugs per size of the module (for example per 1000 lines of code).</td></tr>
+<tr><td>Defect leakage</td><td>Bugs that testers missed and users found after release. Lower is better.</td></tr>
+<tr><td>Test coverage</td><td>How much of the requirements or code is covered by tests.</td></tr>
+<tr><td>Defect age</td><td>How many days a bug stays open.</td></tr>
+</table></div>
+<h3>Risk-based testing</h3>
+<p>When time is short, test the parts that are <b>most used</b> and <b>most damaging if they fail</b> first (payment, login), and the less important parts later.</p>
+
+<h2>10. Agile, Scrum and sprint</h2>
+<p><b>Agile</b> means building software in small pieces, with frequent feedback, instead of one big delivery at the end. <b>Scrum</b> is the most popular way to do Agile.</p>
+<div class="tw"><table>
+<tr><th>Word</th><th>Meaning</th></tr>
+<tr><td>Sprint</td><td>A fixed work period, usually 2 weeks. The team builds and tests a few features in it.</td></tr>
+<tr><td>Product backlog</td><td>The full list of work wanted for the product.</td></tr>
+<tr><td>Sprint backlog</td><td>The work the team chose for the current sprint.</td></tr>
+<tr><td>User story</td><td>A feature written from the user's view: "As a user, I want to reset my password so that I can log in again."</td></tr>
+<tr><td>Acceptance criteria</td><td>Conditions that must be true for the story to be called done. Testers write test cases from these.</td></tr>
+<tr><td>Story points</td><td>A number showing how big or hard a story is.</td></tr>
+<tr><td>Sprint planning</td><td>Meeting at the start: decide what to do in this sprint.</td></tr>
+<tr><td>Daily stand-up</td><td>15-minute daily meeting: what I did yesterday, what I will do today, any blockers.</td></tr>
+<tr><td>Sprint review / demo</td><td>At the end: show finished work to the stakeholders.</td></tr>
+<tr><td>Retrospective</td><td>Team talks about what went well and what to improve.</td></tr>
+<tr><td>Definition of Done</td><td>Team's checklist for a story to be fully complete, including tested.</td></tr>
+</table></div>
+<p><b>Roles:</b> Product Owner (decides what to build), Scrum Master (helps the team follow the process), Developers, and QA/Testers.</p>
+
+<h2>11. Jira: tickets, board and sprint</h2>
+<p>Jira is a tool used by teams to track work. Every piece of work is a <b>ticket</b> (also called an issue) with a key like <code>PAY-123</code>.</p>
+<h3>Ticket types</h3>
+<div class="tw"><table>
+<tr><th>Type</th><th>Use</th></tr>
+<tr><td>Epic</td><td>A big feature made of many stories. Example: "User Login".</td></tr>
+<tr><td>Story</td><td>One small feature for the user.</td></tr>
+<tr><td>Task</td><td>A technical or general work item.</td></tr>
+<tr><td>Bug</td><td>A defect found in testing. Testers create these.</td></tr>
+<tr><td>Sub-task</td><td>A small part of a story, e.g. "Write test cases".</td></tr>
+</table></div>
+<h3>Important fields in a ticket</h3>
+<p>Summary (title), Description, Assignee (who works on it), Reporter (who created it), Priority, Status, Sprint, Labels, Story points, Attachments, Comments.</p>
+<h3>Jira board</h3>
+<p>A board shows tickets as cards in columns. You drag a card to the next column as work moves ahead.</p>
+<div class="flow"><span>To Do</span><i>→</i><span>In Progress</span><i>→</i><span>In Review</span><i>→</i><span>In QA / Testing</span><i>→</i><span>Done</span></div>
+<p>A <b>Scrum board</b> shows only the current sprint. A <b>Kanban board</b> shows continuous flow without sprints.</p>
+<h3>A tester's day in Jira</h3>
+<ol>
+<li>Open the story in the sprint and read the description and acceptance criteria.</li>
+<li>Write test cases (often as sub-tasks or in a test management tool).</li>
+<li>When the story reaches "In QA", test it on the QA environment.</li>
+<li>If something fails, create a <b>Bug</b> ticket, link it to the story, and assign it to the developer.</li>
+<li>After the fix, retest. Pass: close the bug and move the story to Done. Fail: reopen with a comment.</li>
+</ol>
+
+<h3>More Jira things asked in interviews</h3>
+<ul>
+<li><b>Workflow:</b> the path a ticket follows (To Do → In Progress → In QA → Done). Moving a ticket from one status to another is called a <b>transition</b>.</li>
+<li><b>Linking tickets:</b> link a bug to its story with "relates to", "is blocked by" or "duplicates", so everyone can trace it.</li>
+<li><b>Components and labels:</b> tags to group tickets by part of the app (Payments, Login) or by topic (regression, UI).</li>
+<li><b>Affects Version / Fix Version:</b> in which release the bug was found, and in which release it will be fixed.</li>
+<li><b>Dashboard and filters:</b> saved searches and charts, such as "all open bugs assigned to me".</li>
+<li><b>Backlog:</b> the list of tickets not yet taken into a sprint. <b>Burndown chart</b> shows work left in the sprint.</li>
+<li><b>Test management add-ons:</b> Xray and Zephyr let you write and run test cases inside Jira. <b>Confluence</b> is used for documents.</li>
+</ul>
+<h3>JQL: Jira's search language</h3>
+<pre><code>project = PAY AND issuetype = Bug AND status != Done
+assignee = currentUser() ORDER BY priority DESC
+sprint in openSprints() AND issuetype = Bug</code></pre>
+<p>These find: all open bugs in project PAY; tickets assigned to me, highest priority first; bugs in the current sprint.</p>
+
+<h2>12. How to answer common fresher questions</h2>
+<ul>
+<li><b>Tell me about yourself:</b> your degree, the skills you learned (manual testing, Selenium, API, Git), one project or practice work, and why you want a QA role. Keep it under one minute.</li>
+<li><b>Why testing?</b> "I like finding problems before users do, I pay attention to details, and QA is a strong start for a career in quality and automation."</li>
+<li><b>Explain a project:</b> pick one app you practised on. Say what it does, what you tested (login, search, forms), how many test cases you wrote, which bugs you found and how you reported them.</li>
+<li><b>If you do not know an answer:</b> say "I have not worked on this yet, but I understand it as..." and explain what you do know. Never guess wildly.</li>
+<li><b>Practise live:</b> do a demo test on a public practice website. Write test cases, find a bug, and write the bug report in the standard format.</li>
+</ul>
+
+<h2>13. Quick interview answers</h2>
+<ul class="qa">
+<li><b>Smoke vs sanity?</b> Smoke is a broad, shallow check of a new build. Sanity is a narrow, deep check after a small change or fix.</li>
+<li><b>Regression vs retesting?</b> Retesting checks one fixed bug again. Regression checks that old features are not broken.</li>
+<li><b>Severity vs priority?</b> Severity is the impact on the app. Priority is how soon to fix.</li>
+<li><b>What if a developer says "not a bug"?</b> Show the requirement, steps and proof (screenshot or video), and discuss politely with the product owner.</li>
+<li><b>What is a test case vs a test scenario?</b> Scenario is the idea ("test login"). Test case is the detailed steps for it.</li>
+<li><b>What do you do if you find a bug?</b> Repeat it, collect proof, write a clear bug report in Jira, assign it, retest after the fix.</li>
+<li><b>What is a sprint?</b> A fixed period (about 2 weeks) in which the team completes a set of stories.</li>
+<li><b>What is SDLC? Name some models.</b> The steps to build software: requirements, design, coding, testing, deployment, maintenance. Models: Waterfall, V-Model, Iterative, Spiral, Agile.</li>
+<li><b>Waterfall vs Agile?</b> Waterfall does phases one after another and tests at the end. Agile works in short sprints and tests in every sprint.</li>
+<li><b>SDLC vs STLC?</b> SDLC covers building the whole software. STLC covers only the testing steps.</li>
+<li><b>What is RTM?</b> A table that maps requirements to test cases so no requirement is left untested.</li>
+<li><b>Entry vs exit criteria?</b> Conditions to start testing vs conditions to stop testing.</li>
+<li><b>Load vs stress testing?</b> Load: expected users. Stress: more than expected, to find the breaking point.</li>
+<li><b>Alpha vs beta testing?</b> Alpha: inside the company. Beta: with a small group of real users outside.</li>
+<li><b>What is defect leakage?</b> Bugs that were missed in testing and found by users in production.</li>
+<li><b>Verification vs validation?</b> Verification: building the product right (reviews). Validation: building the right product (running tests).</li>
+<li><b>What is a test plan and who writes it?</b> A document of scope, approach, schedule and resources; usually written by the QA lead.</li>
+</ul>
+</main>
+</body>
+</html>

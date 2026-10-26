@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Application Form - Practice Page</title>
+<style>
+  body{font-family:system-ui,Arial,sans-serif;background:#f3f5f8;margin:0;padding:24px;color:#1b2430}
+  .card{max-width:620px;margin:0 auto;background:#fff;border:1px solid #d9dfe7;border-radius:10px;padding:24px}
+  h1{font-size:1.3rem;margin:0 0 8px}
+  .field{margin:14px 0}
+  label.main,.legend{display:block;font-weight:600;margin-bottom:4px;font-size:.92rem}
+  input[type=text],input[type=email],input[type=tel],input[type=date],select,textarea{width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid #aab4c0;border-radius:6px;font-size:1rem;font-family:inherit}
+  textarea{min-height:80px}
+  .inline label{display:inline-block;margin-right:14px;font-weight:400}
+  .error{color:#b3261e;font-size:.85rem;min-height:1.1em;margin-top:3px}
+  button{padding:9px 16px;border:0;border-radius:6px;background:#1f5fbf;color:#fff;font-size:1rem;cursor:pointer;margin-right:8px}
+  #resetBtn{background:#5b6675}
+  #result{margin-top:18px;padding:12px;border-radius:6px;background:#e3f6e8;color:#14532d;white-space:pre-wrap;font-family:ui-monospace,Menlo,monospace;font-size:.85rem}
+  .hint{color:#5b6675;font-size:.82rem}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Job application</h1>
+  <p class="hint">All fields are required. Errors appear after you click Submit.</p>
+  <form id="appForm" novalidate>
+
+    <div class="field">
+      <label class="main" for="fullName">Full name</label>
+      <input id="fullName" name="fullName" type="text" placeholder="As per your ID">
+      <div class="error" id="err-fullName"></div>
+    </div>
+
+    <div class="field">
+      <label class="main" for="email">Email</label>
+      <input id="email" name="email" type="email" placeholder="name@example.com">
+      <div class="error" id="err-email"></div>
+    </div>
+
+    <div class="field">
+      <label class="main" for="phone">Mobile number</label>
+      <input id="phone" name="phone" type="tel" placeholder="10 digits">
+      <div class="error" id="err-phone"></div>
+    </div>
+
+    <div class="field">
+      <label class="main" for="dob">Date of birth</label>
+      <input id="dob" name="dob" type="date">
+      <div class="error" id="err-dob"></div>
+    </div>
+
+    <div class="field">
+      <span class="legend" id="genderLabel">Gender</span>
+      <div class="inline" role="radiogroup" aria-labelledby="genderLabel">
+        <label><input type="radio" name="gender" id="genderMale" value="Male"> Male</label>
+        <label><input type="radio" name="gender" id="genderFemale" value="Female"> Female</label>
+        <label><input type="radio" name="gender" id="genderOther" value="Other"> Other</label>
+      </div>
+      <div class="error" id="err-gender"></div>
+    </div>
+
+    <div class="field">
+      <label class="main" for="country">Country</label>
+      <select id="country" name="country">
+        <option value="">-- Select country --</option>
+        <option value="India">India</option>
+        <option value="USA">USA</option>
+        <option value="UK">UK</option>
+      </select>
+      <div class="error" id="err-country"></div>
+    </div>
+
+    <div class="field">
+      <label class="main" for="state">State</label>
+      <select id="state" name="state" disabled>
+        <option value="">-- Select country first --</option>
+      </select>
+      <div class="error" id="err-state"></div>
+    </div>
+
+    <div class="field">
+      <label class="main" for="skills">Skills (select 1 to 3, hold Ctrl or Cmd for many)</label>
+      <select id="skills" name="skills" multiple size="5">
+        <option value="Selenium">Selenium</option>
+        <option value="Playwright">Playwright</option>
+        <option value="Postman">Postman</option>
+        <option value="SQL">SQL</option>
+        <option value="Git">Git</option>
+      </select>
+      <div class="error" id="err-skills"></div>
+    </div>
+
+    <div class="field">
+      <span class="legend" id="langLabel">Languages known</span>
+      <div class="inline" role="group" aria-labelledby="langLabel">
+        <label><input type="checkbox" name="lang" id="langEnglish" value="English"> English</label>
+        <label><input type="checkbox" name="lang" id="langHindi" value="Hindi"> Hindi</label>
+        <label><input type="checkbox" name="lang" id="langTelugu" value="Telugu"> Telugu</label>
+      </div>
+      <div class="error" id="err-lang"></div>
+    </div>
+
+    <div class="field">
+      <label class="main" for="experience">Experience in years: <output id="expOut">0</output></label>
+      <input id="experience" name="experience" type="range" min="0" max="20" value="0" style="width:100%">
+    </div>
+
+    <div class="field">
+      <label class="main" for="address">Address</label>
+      <textarea id="address" name="address" maxlength="200" placeholder="House no, street, city"></textarea>
+      <div class="hint"><span id="addrCount">0</span>/200 characters</div>
+      <div class="error" id="err-address"></div>
+    </div>
+
+    <div class="field">
+      <label class="main" for="resume">Resume (PDF, DOC or DOCX, max 2 MB)</label>
+      <input id="resume" name="resume" type="file" accept=".pdf,.doc,.docx">
+      <div class="error" id="err-resume"></div>
+    </div>
+
+    <div class="field">
+      <label><input type="checkbox" id="terms" name="terms"> I agree to the terms and conditions</label>
+      <div class="error" id="err-terms"></div>
+    </div>
+
+    <button type="submit" id="submitBtn">Submit</button>
+    <button type="button" id="resetBtn">Reset</button>
+  </form>
+
+  <div id="result" hidden></div>
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const states = {
+    India: ['Karnataka', 'Maharashtra', 'Delhi'],
+    USA: ['California', 'Texas'],
+    UK: ['England', 'Scotland']
+  };
+
+  // Dependent dropdown: state options depend on country
+  $('country').addEventListener('change', () => {
+    const list = states[$('country').value] || [];
+    const st = $('state');
+    st.innerHTML = '';
+    if (list.length === 0) {
+      st.innerHTML = '<option value="">-- Select country first --</option>';
+      st.disabled = true;
+      return;
+    }
+    st.innerHTML = '<option value="">-- Select state --</option>' + list.map(s => `<option value="${s}">${s}</option>`).join('');
+    st.disabled = false;
+  });
+
+  $('experience').addEventListener('input', () => { $('expOut').textContent = $('experience').value; });
+  $('address').addEventListener('input', () => { $('addrCount').textContent = $('address').value.length; });
+
+  function validate() {
+    const errors = {};
+    const name = $('fullName').value.trim();
+    if (name === '') errors.fullName = 'Full name is required';
+    else if (name.length < 2 || name.length > 40) errors.fullName = 'Name must be 2 to 40 characters';
+    else if (!/^[A-Za-z .'-]+$/.test(name)) errors.fullName = 'Name can have only letters, space, dot, hyphen and apostrophe';
+
+    const email = $('email').value.trim();
+    if (email === '') errors.email = 'Email is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(email)) errors.email = 'Enter a valid email address';
+
+    const phone = $('phone').value.trim();
+    if (phone === '') errors.phone = 'Mobile number is required';
+    else if (!/^[6-9][0-9]{9}$/.test(phone)) errors.phone = 'Enter a 10 digit number starting with 6, 7, 8 or 9';
+
+    const dob = $('dob').value;
+    if (dob === '') errors.dob = 'Date of birth is required';
+    else {
+      const d = new Date(dob), today = new Date();
+      let age = today.getFullYear() - d.getFullYear();
+      const m = today.getMonth() - d.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
+      if (d > today) errors.dob = 'Date of birth cannot be in the future';
+      else if (age < 18) errors.dob = 'You must be at least 18 years old';
+    }
+
+    if (!document.querySelector('input[name="gender"]:checked')) errors.gender = 'Select a gender';
+    if ($('country').value === '') errors.country = 'Select a country';
+    if ($('country').value !== '' && $('state').value === '') errors.state = 'Select a state';
+
+    const skillCount = [...$('skills').selectedOptions].length;
+    if (skillCount === 0) errors.skills = 'Select at least one skill';
+    else if (skillCount > 3) errors.skills = 'Select at most 3 skills';
+
+    if (document.querySelectorAll('input[name="lang"]:checked').length === 0) errors.lang = 'Select at least one language';
+
+    const addr = $('address').value.trim();
+    if (addr === '') errors.address = 'Address is required';
+    else if (addr.length < 10) errors.address = 'Address must be at least 10 characters';
+
+    const file = $('resume').files[0];
+    if (!file) errors.resume = 'Upload your resume';
+    else if (!/\.(pdf|doc|docx)$/i.test(file.name)) errors.resume = 'Only PDF, DOC or DOCX files are allowed';
+    else if (file.size > 2 * 1024 * 1024) errors.resume = 'File must be 2 MB or smaller';
+    else if (file.size === 0) errors.resume = 'File is empty';
+
+    if (!$('terms').checked) errors.terms = 'You must accept the terms';
+    return errors;
+  }
+
+  function showErrors(errors) {
+    ['fullName','email','phone','dob','gender','country','state','skills','lang','address','resume','terms']
+      .forEach(k => { $('err-' + k).textContent = errors[k] || ''; });
+  }
+
+  $('appForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const errors = validate();
+    showErrors(errors);
+    $('result').hidden = true;
+    if (Object.keys(errors).length > 0) return;
+
+    const data = {
+      fullName: $('fullName').value.trim(),
+      email: $('email').value.trim(),
+      phone: $('phone').value.trim(),
+      dob: $('dob').value,
+      gender: document.querySelector('input[name="gender"]:checked').value,
+      country: $('country').value,
+      state: $('state').value,
+      skills: [...$('skills').selectedOptions].map(o => o.value),
+      languages: [...document.querySelectorAll('input[name="lang"]:checked')].map(c => c.value),
+      experience: Number($('experience').value),
+      resume: $('resume').files[0].name
+    };
+    $('result').textContent = JSON.stringify(data, null, 2);
+    $('result').hidden = false;
+    alert('Application submitted successfully');
+  });
+
+  $('resetBtn').addEventListener('click', () => {
+    if (confirm('Clear the whole form?')) {
+      $('appForm').reset();
+      $('state').innerHTML = '<option value="">-- Select country first --</option>';
+      $('state').disabled = true;
+      $('expOut').textContent = '0';
+      $('addrCount').textContent = '0';
+      showErrors({});
+      $('result').hidden = true;
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mini Shop - Practice Page</title>
+<style>
+  body{font-family:system-ui,Arial,sans-serif;background:#f3f5f8;margin:0;padding:24px;color:#1b2430}
+  .wrap{max-width:720px;margin:0 auto}
+  .card{background:#fff;border:1px solid #d9dfe7;border-radius:10px;padding:20px;margin-bottom:16px}
+  h1{font-size:1.3rem;margin:0 0 12px}
+  h2{font-size:1.1rem;margin:0 0 10px}
+  label{display:block;font-weight:600;margin:12px 0 4px;font-size:.92rem}
+  input[type=text],input[type=email],input[type=password],select,textarea{width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid #aab4c0;border-radius:6px;font-size:1rem;font-family:inherit}
+  button{padding:8px 14px;border:0;border-radius:6px;background:#1f5fbf;color:#fff;font-size:.95rem;cursor:pointer}
+  button:disabled{background:#9aa7b8;cursor:not-allowed}
+  button.grey{background:#5b6675}
+  .error{color:#b3261e;font-size:.85rem;min-height:1.1em;margin-top:4px}
+  .ok{color:#177a3c;font-size:.9rem}
+  nav{display:flex;gap:12px;align-items:center;margin-bottom:16px}
+  nav .spacer{flex:1}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-top:12px}
+  .product{border:1px solid #d9dfe7;border-radius:8px;padding:12px}
+  .product .name{font-weight:700}
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:8px;border-bottom:1px solid #e3e7ed}
+  .totals p{margin:4px 0;display:flex;justify-content:space-between}
+  .pay label{display:inline-block;font-weight:400;margin-right:14px}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav id="topNav" hidden>
+    <strong>Mini Shop</strong>
+    <button type="button" class="grey" id="shopLink">Products</button>
+    <button type="button" class="grey" id="cartLink">Cart (<span id="cartCount">0</span>)</button>
+    <span class="spacer"></span>
+    <span id="welcome"></span>
+    <button type="button" class="grey" id="logoutBtn">Logout</button>
+  </nav>
+
+  <!-- 1. Login -->
+  <section class="card" id="loginView">
+    <h1>Login</h1>
+    <p class="hint">Use qa@test.com and Test@1234</p>
+    <label for="email">Email</label>
+    <input id="email" type="email" placeholder="you@example.com">
+    <label for="pass">Password</label>
+    <input id="pass" type="password" placeholder="Password">
+    <div class="error" id="loginError" role="alert"></div>
+    <button type="button" id="loginBtn">Login</button>
+  </section>
+
+  <!-- 2. Products -->
+  <section class="card" id="shopView" hidden>
+    <h2>Products</h2>
+    <div style="display:flex;gap:10px">
+      <input id="search" type="text" placeholder="Search products" aria-label="Search products">
+      <select id="category" aria-label="Category" style="max-width:170px">
+        <option value="All">All categories</option>
+        <option value="Stationery">Stationery</option>
+        <option value="Bags">Bags</option>
+      </select>
+    </div>
+    <div class="grid" id="productGrid"></div>
+    <p id="noResults" hidden>No products found</p>
+  </section>
+
+  <!-- 3. Cart -->
+  <section class="card" id="cartView" hidden>
+    <h2>Your cart</h2>
+    <p id="emptyCart">Your cart is empty</p>
+    <table id="cartTable" hidden>
+      <thead><tr><th>Item</th><th>Price</th><th>Qty</th><th>Total</th><th></th></tr></thead>
+      <tbody id="cartBody"></tbody>
+    </table>
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <input id="couponInput" type="text" placeholder="Coupon code" aria-label="Coupon code">
+      <button type="button" id="applyCoupon">Apply</button>
+    </div>
+    <div id="couponMsg" class="error"></div>
+    <div class="totals">
+      <p><span>Subtotal</span><span id="subtotal">&#8377;0</span></p>
+      <p><span>Discount</span><span id="discount">&#8377;0</span></p>
+      <p><strong>Total</strong><strong id="total">&#8377;0</strong></p>
+    </div>
+    <button type="button" id="checkoutBtn" disabled>Proceed to checkout</button>
+  </section>
+
+  <!-- 4. Checkout -->
+  <section class="card" id="checkoutView" hidden>
+    <h2>Checkout</h2>
+    <label for="shipName">Full name</label>
+    <input id="shipName" type="text">
+    <label for="shipAddress">Address</label>
+    <textarea id="shipAddress" rows="3"></textarea>
+    <label for="pin">PIN code</label>
+    <input id="pin" type="text" maxlength="6" placeholder="6 digits">
+    <label>Payment method</label>
+    <div class="pay">
+      <label><input type="radio" name="pay" id="payCard" value="Card"> Card</label>
+      <label><input type="radio" name="pay" id="payUpi" value="UPI"> UPI</label>
+      <label><input type="radio" name="pay" id="payCod" value="COD"> Cash on delivery</label>
+    </div>
+    <div class="error" id="checkoutError" role="alert"></div>
+    <button type="button" id="placeOrder">Place order</button>
+  </section>
+
+  <!-- 5. Confirmation -->
+  <section class="card" id="doneView" hidden>
+    <h2 id="orderStatus">Order placed</h2>
+    <p>Your order id is <strong id="orderId"></strong></p>
+    <p>Amount paid: <strong id="orderTotal"></strong> by <span id="orderPay"></span></p>
+    <button type="button" id="continueBtn">Continue shopping</button>
+  </section>
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const PRODUCTS = [
+    { id: 1, name: 'Notebook', price: 250,  cat: 'Stationery' },
+    { id: 2, name: 'Pen Pack', price: 100,  cat: 'Stationery' },
+    { id: 3, name: 'Backpack', price: 1200, cat: 'Bags' }
+  ];
+  const VIEWS = ['loginView', 'shopView', 'cartView', 'checkoutView', 'doneView'];
+  let cart = {};            // productId -> quantity
+  let couponApplied = false;
+  let user = null;
+
+  function show(view) {
+    VIEWS.forEach(v => { $(v).hidden = (v !== view); });
+    $('topNav').hidden = (view === 'loginView');
+  }
+
+  /* ---------- Login ---------- */
+  $('loginBtn').addEventListener('click', () => {
+    const e = $('email').value.trim(), p = $('pass').value;
+    if (e === '' || p === '') { $('loginError').textContent = 'Email and password are required'; return; }
+    if (e !== 'qa@test.com' || p !== 'Test@1234') { $('loginError').textContent = 'Invalid email or password'; return; }
+    user = e;
+    $('loginError').textContent = '';
+    $('welcome').textContent = 'Welcome, ' + user;
+    renderProducts();
+    show('shopView');
+  });
+
+  $('logoutBtn').addEventListener('click', () => {
+    user = null; cart = {}; couponApplied = false;
+    $('email').value = ''; $('pass').value = ''; $('couponInput').value = ''; $('couponMsg').textContent = '';
+    updateCartCount();
+    show('loginView');
+  });
+
+  /* ---------- Products ---------- */
+  function renderProducts() {
+    const q = $('search').value.trim().toLowerCase(), c = $('category').value;
+    const list = PRODUCTS.filter(p => p.name.toLowerCase().includes(q) && (c === 'All' || p.cat === c));
+    $('productGrid').innerHTML = list.map(p =>
+      `<div class="product" id="product-${p.id}">
+         <div class="name">${p.name}</div>
+         <div class="price">&#8377;${p.price}</div>
+         <div class="hint">${p.cat}</div>
+         <button type="button" id="add-${p.id}" data-id="${p.id}">Add to cart</button>
+       </div>`).join('');
+    $('noResults').hidden = list.length !== 0;
+    list.forEach(p => $('add-' + p.id).addEventListener('click', () => {
+      cart[p.id] = (cart[p.id] || 0) + 1;
+      updateCartCount();
+    }));
+  }
+  $('search').addEventListener('input', renderProducts);
+  $('category').addEventListener('change', renderProducts);
+  $('shopLink').addEventListener('click', () => show('shopView'));
+
+  /* ---------- Cart ---------- */
+  function updateCartCount() {
+    $('cartCount').textContent = Object.values(cart).reduce((a, b) => a + b, 0);
+  }
+
+  function totals() {
+    const subtotal = Object.entries(cart).reduce((s, [id, q]) => s + PRODUCTS.find(p => p.id == id).price * q, 0);
+    const discount = couponApplied ? Math.round(subtotal * 0.10) : 0;
+    return { subtotal, discount, total: subtotal - discount };
+  }
+
+  function renderCart() {
+    const ids = Object.keys(cart);
+    $('emptyCart').hidden = ids.length !== 0;
+    $('cartTable').hidden = ids.length === 0;
+    $('cartBody').innerHTML = ids.map(id => {
+      const p = PRODUCTS.find(x => x.id == id), q = cart[id];
+      return `<tr id="cart-row-${id}">
+        <td>${p.name}</td><td>&#8377;${p.price}</td>
+        <td><button type="button" id="dec-${id}" ${q === 1 ? 'disabled' : ''}>-</button>
+            <span id="qty-${id}">${q}</span>
+            <button type="button" id="inc-${id}">+</button></td>
+        <td class="line-total">&#8377;${p.price * q}</td>
+        <td><button type="button" class="grey" id="rm-${id}">Remove</button></td></tr>`;
+    }).join('');
+    ids.forEach(id => {
+      $('inc-' + id).addEventListener('click', () => { cart[id]++; updateCartCount(); renderCart(); });
+      $('dec-' + id).addEventListener('click', () => { if (cart[id] > 1) cart[id]--; updateCartCount(); renderCart(); });
+      $('rm-' + id).addEventListener('click', () => { delete cart[id]; updateCartCount(); renderCart(); });
+    });
+    const t = totals();
+    $('subtotal').textContent = '₹' + t.subtotal;
+    $('discount').textContent = '₹' + t.discount;
+    $('total').textContent = '₹' + t.total;
+    $('checkoutBtn').disabled = ids.length === 0;
+  }
+
+  $('cartLink').addEventListener('click', () => { renderCart(); show('cartView'); });
+
+  $('applyCoupon').addEventListener('click', () => {
+    const code = $('couponInput').value.trim();
+    if (code === '') { $('couponMsg').className = 'error'; $('couponMsg').textContent = 'Enter a coupon code'; return; }
+    if (code === 'SAVE10') {
+      couponApplied = true;
+      $('couponMsg').className = 'ok'; $('couponMsg').textContent = 'Coupon SAVE10 applied: 10% off';
+    } else {
+      couponApplied = false;
+      $('couponMsg').className = 'error'; $('couponMsg').textContent = 'Invalid coupon code';
+    }
+    renderCart();
+  });
+
+  $('checkoutBtn').addEventListener('click', () => { $('checkoutError').textContent = ''; show('checkoutView'); });
+
+  /* ---------- Checkout ---------- */
+  $('placeOrder').addEventListener('click', () => {
+    const name = $('shipName').value.trim(), addr = $('shipAddress').value.trim(), pin = $('pin').value.trim();
+    const pay = document.querySelector('input[name="pay"]:checked');
+    let err = '';
+    if (name === '' || addr === '') err = 'Name and address are required';
+    else if (!/^[1-9][0-9]{5}$/.test(pin)) err = 'Enter a valid 6 digit PIN code';
+    else if (!pay) err = 'Select a payment method';
+    $('checkoutError').textContent = err;
+    if (err) return;
+
+    const t = totals();
+    $('orderId').textContent = 'ORD-' + (10000 + Math.floor(Math.random() * 90000));
+    $('orderTotal').textContent = '₹' + t.total;
+    $('orderPay').textContent = pay.value;
+    cart = {}; couponApplied = false;
+    $('couponInput').value = ''; $('couponMsg').textContent = '';
+    updateCartCount();
+    show('doneView');
+  });
+
+  $('continueBtn').addEventListener('click', () => show('shopView'));
+</script>
+</body>
+</html>

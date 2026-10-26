@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tester Mindset</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: single readable column of study notes; principles, techniques, then short case studies */
+:root{--bg:#f5f7f9;--card:#ffffff;--fg:#17212b;--mut:#56626e;--line:#dce2e8;--acc:#0b6e69;--accbg:#e0f1ef;--tip:#fff3d1;--tipfg:#5f4300;--code:#0f1b24;--codefg:#d6e5ee;--hd:'Bricolage Grotesque',system-ui,sans-serif;--bd:'Atkinson Hyperlegible',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1519;--card:#151e24;--fg:#e4ebf0;--mut:#9aa8b3;--line:#26323a;--acc:#4fd1c5;--accbg:#12302e;--tip:#3a2f10;--tipfg:#f2d789;--code:#0a1014;--codefg:#cfe2ec;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1519;--card:#151e24;--fg:#e4ebf0;--mut:#9aa8b3;--line:#26323a;--acc:#4fd1c5;--accbg:#12302e;--tip:#3a2f10;--tipfg:#f2d789;--code:#0a1014;--codefg:#cfe2ec;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.65 var(--bd);padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:760px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:700}
+h1{font:700 2rem/1.15 var(--hd);margin:.3rem 0 .6rem;text-wrap:balance}
+h2{font:700 1.4rem/1.25 var(--hd);margin:2.4rem 0 .6rem;padding-top:1.2rem;border-top:1px solid var(--line);text-wrap:balance}
+h3{font:600 1.05rem/1.3 var(--hd);margin:1.3rem 0 .3rem}
+p,ul,ol{margin:.5rem 0}
+li{margin:.25rem 0}
+.lead{color:var(--mut);font-size:1.05rem}
+code{font-family:var(--mono);font-size:.86em;background:var(--accbg);color:var(--acc);padding:1px 5px;border-radius:4px}
+.tw{overflow-x:auto;margin:.7rem 0;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700}
+.tip{background:var(--tip);color:var(--tipfg);padding:10px 14px;border-radius:6px;margin:.8rem 0;font-size:.95rem}
+.case{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:4px 16px 12px;margin:.9rem 0}
+.case h3{margin-top:.9rem}
+.case ul{padding-left:1.2rem}
+.case h4{font:700 .78rem/1.3 var(--bd);letter-spacing:.06em;text-transform:uppercase;color:var(--acc);margin:.9rem 0 .1rem}
+.qa li{margin:.55rem 0}
+</style>
+
+</head>
+<body>
+<main>
+
+<div class="eyebrow">QA notes for freshers · How to think</div>
+<h1>How a Tester Thinks</h1>
+<p class="lead">Tools can be learned in weeks. The tester's way of thinking is what makes you good at the job.</p>
+
+<h2>1. The tester's mindset</h2>
+<ul>
+<li><b>Be curious.</b> Keep asking "what if?" What if I leave this blank? What if I click twice? What if the internet drops?</li>
+<li><b>Think like the user.</b> Real users are in a hurry, make mistakes, and use the app in ways nobody planned.</li>
+<li><b>Try to break it, politely.</b> Your job is to find problems before customers do. A found bug is a win for the team, not a fight with the developer.</li>
+<li><b>Question everything.</b> If a requirement is unclear, ask. Many bugs come from unclear requirements.</li>
+<li><b>Be detail-oriented.</b> Spelling, alignment, numbers, messages: notice small things.</li>
+<li><b>Communicate clearly.</b> A bug is useful only if others can understand and repeat it.</li>
+</ul>
+
+<h2>2. The 7 principles of testing</h2>
+<div class="tw"><table>
+<tr><th>Principle</th><th>Meaning in simple words</th></tr>
+<tr><td>1. Testing shows that bugs exist</td><td>Testing can show bugs are present. It can never prove an app has zero bugs.</td></tr>
+<tr><td>2. Exhaustive testing is impossible</td><td>You cannot test every input and every path. A single phone number box has crores of possible inputs. So choose tests smartly, by risk.</td></tr>
+<tr><td>3. Early testing saves time and money</td><td>Start testing from the requirement stage. A bug found in requirements is cheap to fix. The same bug found after release is costly.</td></tr>
+<tr><td>4. Defects cluster together</td><td>A few modules usually hold most of the bugs (about 80% in 20% of the app). Test risky or complex areas more.</td></tr>
+<tr><td>5. Pesticide paradox</td><td>If you run the same tests again and again, they stop finding new bugs, like insects becoming immune to the same pesticide. Review and update your tests regularly.</td></tr>
+<tr><td>6. Testing depends on context</td><td>A banking app, a game and a hospital system need different kinds of testing.</td></tr>
+<tr><td>7. Absence-of-errors fallacy</td><td>An app with no bugs is still a failure if it does not do what the user needs.</td></tr>
+</table></div>
+
+<h2>3. Two simple techniques to design test data</h2>
+<h3>Equivalence partitioning</h3>
+<p>Split inputs into groups that behave the same, then test one value from each group.</p>
+<h3>Boundary value analysis</h3>
+<p>Bugs love the edges. Test the values just below, on, and just above each limit.</p>
+<div class="tw"><table>
+<tr><th>Example</th><th>An age field accepts 18 to 60</th></tr>
+<tr><td>Groups</td><td>Below 18 (invalid), 18 to 60 (valid), above 60 (invalid)</td></tr>
+<tr><td>One test per group</td><td>10, 35, 75</td></tr>
+<tr><td>Boundary values</td><td>17, 18, 19, 59, 60, 61</td></tr>
+</table></div>
+<div class="tip">Also try: empty field, letters, special characters like @#$, negative number, very large number, spaces only.</div>
+
+<h3>More test design techniques</h3>
+<div class="tw"><table>
+<tr><th>Technique</th><th>Idea</th><th>Example</th></tr>
+<tr><td>Decision table</td><td>When the result depends on a combination of conditions, list all combinations and the result of each.</td><td>Login: valid email Y/N × valid password Y/N → only Y+Y logs in. Discount: member Y/N × coupon Y/N.</td></tr>
+<tr><td>State transition</td><td>The app moves between states depending on actions. Test each move and the not-allowed moves.</td><td>Order: Placed → Packed → Shipped → Delivered. A delivered order cannot go back to Placed. Account: Active → Locked after 3 wrong passwords.</td></tr>
+<tr><td>Error guessing</td><td>Use your experience to guess where bugs hide.</td><td>Blank input, double click, special characters, very large values, back button.</td></tr>
+<tr><td>Exploratory testing</td><td>Learn, design and test at the same time, without fixed steps. Set a goal and a time (for example 45 minutes) and note what you find.</td><td>"Explore the checkout with different payment methods for 45 minutes."</td></tr>
+</table></div>
+
+<h2>4. Detailed case studies: how to test a feature</h2>
+<p>For every feature, think in these buckets. Each case below uses the ones that fit.</p>
+<div class="tw"><table>
+<tr><th>Bucket</th><th>Ask yourself</th></tr>
+<tr><td>Positive</td><td>Does it work when used correctly?</td></tr>
+<tr><td>Negative</td><td>Does it handle wrong input without breaking?</td></tr>
+<tr><td>Edge</td><td>What happens at limits and in odd situations?</td></tr>
+<tr><td>UI / usability</td><td>Is it clear, readable and easy to use?</td></tr>
+<tr><td>Security</td><td>Can someone misuse it?</td></tr>
+<tr><td>Network / performance</td><td>What if the internet is slow or drops? What if many users come?</td></tr>
+<tr><td>Data</td><td>Is the data saved and shown correctly everywhere?</td></tr>
+</table></div>
+
+<div class="case">
+<h3>Case 1: Login page</h3>
+<h4>Positive</h4>
+<ul>
+<li>Correct email and password opens the Home page.</li>
+<li>Login works with Enter key and with the button.</li>
+<li>"Remember me" keeps the user logged in after closing the browser.</li>
+</ul>
+<h4>Negative</h4>
+<ul>
+<li>Wrong password, unknown email, both blank, only one blank.</li>
+<li>Error message is clear but does not say which field was wrong (so attackers learn nothing).</li>
+<li>Correct email with wrong case, such as <code>USER@mail.com</code>: check what the rule is and that it is consistent.</li>
+</ul>
+<h4>Edge</h4>
+<ul>
+<li>Spaces before or after email or password.</li>
+<li>Very long email or password (200+ characters), emoji, non-English letters.</li>
+<li>Copy-paste into fields, browser auto-fill, password manager.</li>
+<li>Click the Login button many times quickly: only one login should happen.</li>
+<li>Login in two browsers or two devices at once.</li>
+<li>Session expires after being idle: user should go back to login with a clear message.</li>
+<li>Press browser Back after logout: the account page must not open again.</li>
+</ul>
+<h4>UI and security</h4>
+<ul>
+<li>Password is hidden, and the show/hide eye icon works.</li>
+<li>Tab order of fields is correct. The page looks fine on a phone.</li>
+<li>Account locks after several wrong tries.</li>
+<li>SQL injection text like <code>' OR 1=1 --</code> in the email box must not log anyone in.</li>
+<li>Password is not visible in the URL, and the page is on HTTPS.</li>
+</ul>
+</div>
+
+<div class="case">
+<h3>Case 2: Sign-up form</h3>
+<h4>Positive</h4>
+<ul>
+<li>All valid details create the account. A welcome email or OTP arrives.</li>
+<li>The new user can log in at once.</li>
+</ul>
+<h4>Negative</h4>
+<ul>
+<li>Each mandatory field left blank, one at a time. The message must point to that field.</li>
+<li>Invalid email formats: <code>abc</code>, <code>abc@</code>, <code>abc@mail</code>, <code>a b@mail.com</code>.</li>
+<li>Email already registered. Same email in different upper/lower case.</li>
+<li>Password and confirm password do not match.</li>
+</ul>
+<h4>Edge</h4>
+<ul>
+<li>Name with a dot, hyphen, apostrophe (O'Neil), or in Hindi or Tamil.</li>
+<li>Phone number: 9 digits, 10 digits, 11 digits, letters, +91 prefix, spaces.</li>
+<li>Password rules at the exact limit: minimum length minus 1, equal, plus 1. Missing capital, number or symbol.</li>
+<li>Date of birth: today, future date, under-age (17 years 364 days vs 18 years), 29 Feb on a leap and non-leap year.</li>
+<li>Submit twice quickly. Refresh after submit. Browser Back after submit. Only one account must be created.</li>
+<li>Terms checkbox not ticked: sign-up should be blocked.</li>
+</ul>
+<h4>Data and security</h4>
+<ul>
+<li>Details saved in the database exactly as entered (no cut-off, no wrong characters).</li>
+<li>Password is stored in encrypted form, never shown in emails or logs.</li>
+<li>Script text like <code>&lt;script&gt;alert(1)&lt;/script&gt;</code> in the name field must not run.</li>
+</ul>
+</div>
+
+<div class="case">
+<h3>Case 3: Search box on a shopping site</h3>
+<h4>Positive</h4>
+<ul>
+<li>"laptop" shows laptops. Results are relevant and the result count is right.</li>
+<li>Pressing Enter and clicking the search icon give the same result.</li>
+<li>Suggestions appear while typing, and clicking one searches it.</li>
+</ul>
+<h4>Negative</h4>
+<ul>
+<li>No matching word: a friendly "no results" message and maybe suggestions. No blank page or error.</li>
+<li>Empty search, or only spaces.</li>
+</ul>
+<h4>Edge</h4>
+<ul>
+<li>CAPITAL letters, mixed case, extra spaces between words, spelling mistakes ("labtop").</li>
+<li>Singular and plural ("shoe" vs "shoes"). Short and very long text (500 characters).</li>
+<li>Special characters: <code>% _ ' " &amp; # @</code>. Numbers only. Emoji. A word in Hindi.</li>
+<li>Multiple words in different order ("red shirt" vs "shirt red").</li>
+<li>Exact product code or model number.</li>
+<li>Search, open a product, press Back: previous results and filters should still be there.</li>
+</ul>
+<h4>Filters, sorting, pages</h4>
+<ul>
+<li>Price filter: min greater than max, min equal to max, negative, blank.</li>
+<li>Sort low-to-high: check the order really is correct, including equal prices.</li>
+<li>Pagination: first page, last page, a page number beyond the last, results exactly equal to one page.</li>
+<li>Combine several filters, then clear all filters.</li>
+</ul>
+<h4>Performance and security</h4>
+<ul>
+<li>Results come in about 2 seconds. Typing fast does not freeze the page.</li>
+<li>Script or SQL text in the box must not run, and the page must not break.</li>
+</ul>
+</div>
+
+<div class="case">
+<h3>Case 4: Add to cart and checkout</h3>
+<h4>Positive</h4>
+<ul>
+<li>Item is added. Cart count, item price and total update correctly.</li>
+<li>Increase or decrease quantity updates the total. Remove item works.</li>
+<li>Discount code reduces the correct amount. Tax and delivery charges are right.</li>
+</ul>
+<h4>Negative</h4>
+<ul>
+<li>Out-of-stock item cannot be added. Quantity 0, negative, decimal (1.5) or letters rejected.</li>
+<li>Expired, wrong or already-used discount code shows a clear message.</li>
+<li>Delivery pin code where delivery is not possible.</li>
+</ul>
+<h4>Edge</h4>
+<ul>
+<li>Add the same item twice: quantity should become 2, not two separate lines (or follow the requirement).</li>
+<li>Maximum allowed quantity and one more than that. Only 1 item left in stock and two users try to buy it together.</li>
+<li>Price or stock changes while the item is sitting in the cart.</li>
+<li>Discount applies, then an item is removed so the minimum order value is no longer met.</li>
+<li>Total with many items: check rounding to 2 decimals (for example 3 items at 33.33).</li>
+<li>Log out and log in again: cart should still be there. Add as guest, then log in: cart should merge.</li>
+<li>Same cart open on phone and laptop: change on one, check the other.</li>
+<li>Empty cart: checkout button should be disabled or give a message.</li>
+</ul>
+<h4>UI and data</h4>
+<ul>
+<li>Product image, name and price in the cart match the product page.</li>
+<li>Currency symbol and number format are consistent (₹1,299.00).</li>
+<li>Order summary matches the cart exactly.</li>
+</ul>
+</div>
+
+<div class="case">
+<h3>Case 5: Online payment (UPI or card)</h3>
+<h4>Positive</h4>
+<ul>
+<li>Payment succeeds, the order is created once, and confirmation page, SMS or email are sent.</li>
+<li>Amount charged is the same as the amount shown on the order summary.</li>
+<li>Each method works: UPI, card, net banking, wallet, cash on delivery.</li>
+</ul>
+<h4>Negative</h4>
+<ul>
+<li>Wrong card number, wrong CVV, expired card, wrong UPI PIN, wrong OTP, insufficient balance.</li>
+<li>Card type that the site does not support. Blank fields.</li>
+<li>After failure the user can retry or pick another method, and no order is wrongly marked as paid.</li>
+</ul>
+<h4>Edge: the dangerous ones</h4>
+<ul>
+<li>Double click on Pay: money must be taken only once.</li>
+<li>Internet drops after money is deducted but before the confirmation page loads. The order status must still become correct.</li>
+<li>User presses Back or Refresh on the payment page, or closes the browser mid-payment.</li>
+<li>Bank is slow and the payment stays "pending" for several minutes. The user should see a clear status.</li>
+<li>Payment page times out. Same order paid from two tabs.</li>
+<li>Amount with paise (₹499.50) and a very large amount above the bank limit.</li>
+<li>Coupon or wallet balance used together with a card (partial payment).</li>
+</ul>
+<h4>After payment</h4>
+<ul>
+<li>Failed payment must not reduce stock or create an order.</li>
+<li>Cancel the order: refund amount, refund time and message are correct.</li>
+<li>Invoice has the right name, address, tax and amount.</li>
+</ul>
+<h4>Security</h4>
+<ul>
+<li>Card number is masked after entry (shown as **** 1234). The page uses HTTPS.</li>
+<li>The amount cannot be changed from the browser or URL before paying.</li>
+</ul>
+</div>
+
+<div class="case">
+<h3>Case 6: Forgot password with OTP</h3>
+<h4>Positive</h4>
+<ul>
+<li>Enter registered email or phone: OTP arrives within a reasonable time.</li>
+<li>Correct OTP opens the "new password" page. The new password works to log in.</li>
+</ul>
+<h4>Negative</h4>
+<ul>
+<li>Unregistered email or phone. Blank field. Wrong OTP. Blank OTP. OTP with letters.</li>
+<li>OTP of 5 or 7 digits when 6 are needed.</li>
+<li>Wrong OTP entered several times: the user is blocked for some time.</li>
+</ul>
+<h4>Edge</h4>
+<ul>
+<li>OTP used after it expires (for example 5 minutes), one second before and one second after.</li>
+<li>OTP used a second time after success. Must fail.</li>
+<li>Click "Resend OTP" quickly many times: there should be a wait timer or a limit, and only the newest OTP must work.</li>
+<li>OTP received in a different phone or email than the one entered.</li>
+<li>New password equal to old password, or breaking the password rules. New and confirm password mismatch.</li>
+<li>Reset link opened twice, or opened after the password was already changed.</li>
+<li>Two reset requests from two tabs at the same time.</li>
+</ul>
+<h4>After reset and security</h4>
+<ul>
+<li>Old password stops working. Other logged-in sessions are logged out (if the requirement says so).</li>
+<li>A confirmation message or email is sent that the password was changed.</li>
+<li>The OTP is not shown in the page, URL or API response.</li>
+<li>Message is the same for registered and unregistered emails (so nobody can find who has an account).</li>
+</ul>
+</div>
+
+<div class="case">
+<h3>Case 7: File upload (profile photo or resume)</h3>
+<h4>Positive</h4>
+<ul>
+<li>Allowed types (jpg, png, pdf) upload and show or open correctly.</li>
+<li>Both "Browse" button and drag-and-drop work.</li>
+<li>Uploaded file can be viewed, downloaded, replaced and deleted.</li>
+</ul>
+<h4>Negative</h4>
+<ul>
+<li>Not-allowed type such as .exe, .zip or .js. Empty (0 KB) file. Corrupt file that will not open.</li>
+<li>Click Upload with no file selected.</li>
+<li>A virus test file, if the site scans uploads.</li>
+</ul>
+<h4>Edge</h4>
+<ul>
+<li>File size: exactly at the limit, 1 KB under, 1 KB over. For example 5 MB limit: test 4.99, 5.00 and 5.01 MB.</li>
+<li>Extension changed on purpose, for example an .exe renamed to .jpg. It must be rejected.</li>
+<li>Capital extension (.JPG), double extension (photo.jpg.exe), no extension.</li>
+<li>Very long file name, spaces, Hindi letters or special characters in the name.</li>
+<li>Same file uploaded twice, or two different files with the same name.</li>
+<li>Image with huge dimensions or a very small one. Rotated phone photo shows the right way up.</li>
+<li>Multiple files at once: the maximum count and one more. One bad file among good ones.</li>
+<li>Upload cancelled halfway, internet drops during upload, browser refreshed during upload.</li>
+</ul>
+<h4>UI and security</h4>
+<ul>
+<li>Progress bar moves and shows a final state. Error messages are clear: "File too large (max 5 MB)".</li>
+<li>Uploaded files cannot be opened by another user through the link, unless allowed.</li>
+<li>The file is not run as code on the server.</li>
+</ul>
+</div>
+
+<h2>5. Classic "how will you test..." questions</h2>
+<p>Interviewers often ask these to see how you think. Do not rush to answer. First <b>ask questions</b>, then list what you would test in groups.</p>
+
+<div class="case">
+<h3>Test a pen</h3>
+<ul>
+<li><b>First ask:</b> what type of pen, who will use it, what is it for?</li>
+<li><b>Functional:</b> it writes, ink flows smoothly, cap fits, click works (for a click pen), refill can be changed.</li>
+<li><b>Usability:</b> comfortable grip, good weight, writes on different paper, left-hand use.</li>
+<li><b>Edge and stress:</b> writes upside down or at an angle, after being dropped, in hot or cold weather, after leaving the cap off for hours.</li>
+<li><b>Other:</b> ink does not leak or smudge, colour matches the label, safe material, how many pages it writes (durability).</li>
+</ul>
+</div>
+
+<div class="case">
+<h3>Test a lift (elevator)</h3>
+<ul>
+<li><b>Functional:</b> pressing a floor button takes the lift to that floor, doors open and close, up and down buttons from each floor work, the display shows the right floor.</li>
+<li><b>Negative and edge:</b> pressing many buttons together, pressing the current floor, door-open button during moving, holding the door button.</li>
+<li><b>Safety:</b> weight limit alarm, door sensor stops closing when someone is in the way, emergency button, alarm and light work, power cut behaviour, fire mode.</li>
+<li><b>Performance:</b> waiting time at peak hours, speed, smooth stop.</li>
+</ul>
+</div>
+
+<div class="case">
+<h3>Test an ATM</h3>
+<ul>
+<li><b>Positive:</b> insert the card, correct PIN, withdraw an allowed amount, correct cash and receipt, balance reduces by the same amount.</li>
+<li><b>Negative:</b> wrong PIN (card blocks after 3 tries), expired or damaged card, amount more than the balance, more than the daily limit, amount not in multiples of 100, ATM has no cash.</li>
+<li><b>Edge:</b> power or network goes off in the middle of a withdrawal (money must not be cut without cash), card not taken back, cancel at any step, session timeout, two transactions together.</li>
+<li><b>Security:</b> PIN hidden while typing, card is not kept without the user, screen resets after finishing.</li>
+</ul>
+</div>
+
+<div class="case">
+<h3>Test a chat app message (like WhatsApp)</h3>
+<ul>
+<li><b>Positive:</b> send and receive a text, delivered and read ticks change, time shown correctly.</li>
+<li><b>Edge:</b> empty message, very long text, emoji, links, other languages, sending while offline (message sends once the network is back), sending to a blocked user.</li>
+<li><b>Other:</b> notification arrives, works on different phones and OS versions, large images and videos, message order is right, group chat with many members, battery and data usage.</li>
+</ul>
+</div>
+
+<div class="case">
+<h3>Test a web page with a "Contact us" form</h3>
+<ul>
+<li><b>Positive:</b> valid name, email, message submit and a thank-you message appears. The team receives the details.</li>
+<li><b>Negative:</b> blank required fields, wrong email format, very long message, special characters and script text.</li>
+<li><b>Other:</b> captcha works, double submit sends only one message, form looks right on mobile and in all browsers, tab key order, error messages are clear.</li>
+</ul>
+</div>
+
+<p><b>Answer pattern to remember:</b> ask questions → functional (positive, negative, edge) → usability → performance → security → compatibility → other (safety, data, accessibility).</p>
+
+<h2>6. A simple checklist for any feature</h2>
+<ol>
+<li><b>Understand</b> what the feature should do. Ask if it is not clear.</li>
+<li><b>List</b> the inputs, outputs and steps.</li>
+<li><b>Test the happy path</b> first (everything correct).</li>
+<li><b>Then negative and edge cases</b> using the techniques above.</li>
+<li><b>Think about the surroundings:</b> different browsers and devices, slow network, many users, data stored correctly, security.</li>
+<li><b>Report</b> clearly and <b>retest</b> after the fix.</li>
+<li><b>Ask yourself:</b> "If I were the customer, would I be happy?"</li>
+</ol>
+
+<h2>7. When to stop testing and what to do with limited time</h2>
+<p>You can never test everything (principle 2). Testing stops when the exit criteria are met, for example:</p>
+<ul>
+<li>All planned test cases are executed and the pass rate is at the agreed level.</li>
+<li>No open critical or high-severity bugs.</li>
+<li>Test coverage target is reached, and the number of new bugs found each day has become very low.</li>
+<li>Time or budget is over. Then tell the team clearly <b>what was tested, what was not, and the risk</b>.</li>
+</ul>
+<p><b>If time is short:</b> run smoke tests, then high-risk and most-used features, then regression on key areas. Leave rare, low-impact areas last.</p>
+<p><b>If requirements are missing:</b> ask the product owner or developer, read similar features, use the old version of the app as a guide, test as the user would, and write down the assumptions you made.</p>
+
+<h2>8. Working with developers and the team</h2>
+<ul>
+<li>Report <b>facts, not blame</b>: "Login fails when the password has a space", not "Your code is wrong".</li>
+<li>Give steps, screenshot or video, build number, browser, and test data. A bug that cannot be repeated is ignored.</li>
+<li>Check <b>not-reproducible</b> bugs again on the same build and environment. Share the exact data.</li>
+<li>If a developer says "works on my machine": compare the environment, data, browser and build version.</li>
+<li>If you disagree whether it is a bug, show the requirement or acceptance criteria and ask the product owner to decide.</li>
+<li>Before releasing, give an honest status: what passed, what failed, what is left.</li>
+<li>Ask when you are stuck, and write down what you learned.</li>
+</ul>
+<h3>What makes a good bug report</h3>
+<ul>
+<li>Clear title: what is wrong and where.</li>
+<li>Exact steps, expected result, actual result.</li>
+<li>One bug per report. Do not mix many issues.</li>
+<li>Environment and build number. Proof attached. Severity and priority set.</li>
+<li>No opinions or harsh words.</li>
+</ul>
+
+<h2>9. Quick interview answers</h2>
+<ul class="qa">
+<li><b>Can you test everything?</b> No. We use risk, equivalence partitioning and boundary values to choose the most useful tests.</li>
+<li><b>When should testing start?</b> As early as possible, from the requirement stage.</li>
+<li><b>What is the pesticide paradox?</b> Repeating the same tests stops finding new bugs, so tests must be reviewed and updated.</li>
+<li><b>How do you test a feature you know nothing about?</b> Ask questions, read the requirement, explore the feature as a user, then write test cases for positive, negative and edge cases.</li>
+<li><b>Boundary value for 1 to 100?</b> 0, 1, 2, 99, 100, 101.</li>
+<li><b>What if you have little time?</b> Test the highest-risk and most-used features first, and tell the team what was not tested.</li>
+<li><b>What makes a good tester?</b> Curiosity, attention to detail, clear communication, and thinking like the user.</li>
+<li><b>Smoke, sanity and regression: which first?</b> Smoke on the new build first. If it passes, run the detailed tests, then regression to see old features still work.</li>
+<li><b>How will you test a lift or a pen?</b> Ask questions first, then cover functional, usability, performance, security and safety, with positive, negative and edge cases.</li>
+<li><b>What is a decision table?</b> A table of all combinations of conditions with the expected result of each.</li>
+<li><b>What is exploratory testing?</b> Learning and testing together without written steps, guided by a goal and by your experience.</li>
+<li><b>When do you stop testing?</b> When exit criteria are met, or when time is over and risks are clearly communicated.</li>
+<li><b>What is risk-based testing?</b> Testing the most important and most likely to fail areas first.</li>
+<li><b>A bug is found in production. What do you do?</b> Reproduce it, raise it with severity and priority, check how it escaped testing, add a test for it, and include it in regression.</li>
+<li><b>Developer says it is not a bug. What now?</b> Show the requirement and proof, stay polite, and let the product owner decide.</li>
+</ul>
+</main>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>QA Interview Prep</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;700&display=swap">
+<style>
+/* Layout: one column, grouped link lists; each row = title, one-line summary, HTML and PDF links */
+:root{--bg:#f6f7f9;--card:#fff;--fg:#18202a;--mut:#5a6572;--line:#dde2e8;--head:#17324d;--link:#1f5f9e;--chip:#e8f1fb;
+--hd:'Bricolage Grotesque',system-ui,sans-serif;--bd:'Atkinson Hyperlegible',system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1519;--card:#161e25;--fg:#e5ebf0;--mut:#9aa8b4;--line:#283440;--head:#b9d6f2;--link:#8fbdf0;--chip:#14263a;color-scheme:dark}}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 var(--bd);padding-block:32px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:780px;margin:0 auto}
+h1{font:700 2.2rem/1.15 var(--hd);color:var(--head);margin:0 0 .4rem}
+h2{font:700 1.2rem/1.3 var(--hd);color:var(--head);margin:2.2rem 0 .6rem;padding-top:1rem;border-top:2px solid var(--line)}
+p{margin:.4rem 0;color:var(--mut)}
+.item{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:.6rem 0}
+.item .t{font-weight:700;color:var(--fg)}
+.item .s{color:var(--mut);font-size:.92rem;flex-basis:100%;order:3}
+.links{display:flex;gap:8px}
+a{color:var(--link);font-weight:700;text-decoration:none}
+a.pill{background:var(--chip);padding:3px 10px;border-radius:99px;font-size:.85rem}
+a:hover{text-decoration:underline}
+code{background:var(--chip);padding:1px 5px;border-radius:4px;font-size:.88em}
+</style>
+</head>
+<body>
+<main>
+<h1>QA Interview Prep</h1>
+<p>Notes, Selenium and Playwright guides in Java, and three practice pages to automate. Written in simple language for someone starting a career in testing.</p>
+
+<h2>Notes</h2>
+<div class="item"><span class="t">1. Manual testing, SDLC and Jira</span><span class="links"><a class="pill" href="notes/1-manual-testing-sdlc-jira.html">Read</a><a class="pill" href="pdf/1-Manual-Testing-SDLC-Jira.pdf">PDF</a></span><span class="s">Testing terms, SDLC models, bug life cycle, Agile, Jira and JQL.</span></div>
+<div class="item"><span class="t">2. Selenium quick notes</span><span class="links"><a class="pill" href="notes/2-selenium-quick-notes.html">Read</a><a class="pill" href="pdf/2-Selenium-UI-Automation.pdf">PDF</a></span><span class="s">Short revision notes with Java snippets.</span></div>
+<div class="item"><span class="t">3. API testing</span><span class="links"><a class="pill" href="notes/3-api-testing.html">Read</a><a class="pill" href="pdf/3-API-Testing.pdf">PDF</a></span><span class="s">HTTP, status codes, Postman, Rest Assured, API test cases, SQL basics.</span></div>
+<div class="item"><span class="t">4. Git and GitHub</span><span class="links"><a class="pill" href="notes/4-git-and-github.html">Read</a><a class="pill" href="pdf/4-Git-and-GitHub.pdf">PDF</a></span><span class="s">Daily commands, branching, pull requests, CI basics.</span></div>
+<div class="item"><span class="t">5. How a tester thinks</span><span class="links"><a class="pill" href="notes/5-how-a-tester-thinks.html">Read</a><a class="pill" href="pdf/5-How-a-Tester-Thinks.pdf">PDF</a></span><span class="s">Testing principles, test design techniques, case studies, classic questions.</span></div>
+
+<h2>Automation guides (Java)</h2>
+<div class="item"><span class="t">6. Selenium with Java</span><span class="links"><a class="pill" href="guides/selenium-java.html">Read</a><a class="pill" href="pdf/6-Selenium-with-Java.pdf">PDF</a></span><span class="s">From the first word to three complete automations. Important parts are marked in red.</span></div>
+<div class="item"><span class="t">7. Playwright with Java</span><span class="links"><a class="pill" href="guides/playwright-java.html">Read</a><a class="pill" href="pdf/7-Playwright-with-Java.pdf">PDF</a></span><span class="s">From the first word to three complete automations. Important parts are marked in red.</span></div>
+
+<h2>Practice pages (the pages the automation tests run on)</h2>
+<div class="item"><span class="t">Password validation</span><span class="links"><a class="pill" href="demo-pages/demo-password.html">Open</a></span><span class="s">Seven password rules, strength text, confirm password, show / hide.</span></div>
+<div class="item"><span class="t">Full form</span><span class="links"><a class="pill" href="demo-pages/demo-form.html">Open</a></span><span class="s">Text, date, radio, checkbox, dependent dropdowns, multi-select, slider, textarea, file upload, popups.</span></div>
+<div class="item"><span class="t">Mini shop (complete flow)</span><span class="links"><a class="pill" href="demo-pages/demo-shop.html">Open</a></span><span class="s">Login, search, cart, coupon, checkout, payment. Login: <code>qa@test.com</code> / <code>Test@1234</code>. Coupon: <code>SAVE10</code>.</span></div>
+
+<h2>Code</h2>
+<div class="item"><span class="t">Java project with all six tests</span><span class="links"><a class="pill" href="https://github.com/ubedzz49/qa-interview-prep/tree/main/automation-code-java">Open code</a></span><span class="s">Maven project: three Selenium and three Playwright test classes. Run with <code>mvn test</code>.</span></div>
+</main>
+</body>
+</html>

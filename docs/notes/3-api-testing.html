@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API Testing Basics</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: single readable column of study notes; code blocks followed by plain-language explanations */
+:root{--bg:#f5f7f9;--card:#ffffff;--fg:#17212b;--mut:#56626e;--line:#dce2e8;--acc:#0b6e69;--accbg:#e0f1ef;--tip:#fff3d1;--tipfg:#5f4300;--code:#0f1b24;--codefg:#d6e5ee;--hd:'Bricolage Grotesque',system-ui,sans-serif;--bd:'Atkinson Hyperlegible',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1519;--card:#151e24;--fg:#e4ebf0;--mut:#9aa8b3;--line:#26323a;--acc:#4fd1c5;--accbg:#12302e;--tip:#3a2f10;--tipfg:#f2d789;--code:#0a1014;--codefg:#cfe2ec;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1519;--card:#151e24;--fg:#e4ebf0;--mut:#9aa8b3;--line:#26323a;--acc:#4fd1c5;--accbg:#12302e;--tip:#3a2f10;--tipfg:#f2d789;--code:#0a1014;--codefg:#cfe2ec;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.65 var(--bd);padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:760px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:700}
+h1{font:700 2rem/1.15 var(--hd);margin:.3rem 0 .6rem;text-wrap:balance}
+h2{font:700 1.4rem/1.25 var(--hd);margin:2.4rem 0 .6rem;padding-top:1.2rem;border-top:1px solid var(--line);text-wrap:balance}
+h3{font:600 1.05rem/1.3 var(--hd);margin:1.3rem 0 .3rem}
+p,ul,ol{margin:.5rem 0}
+li{margin:.25rem 0}
+.lead{color:var(--mut);font-size:1.05rem}
+code{font-family:var(--mono);font-size:.86em;background:var(--accbg);color:var(--acc);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);color:var(--codefg);padding:14px 16px;border-radius:6px;overflow-x:auto;margin:.6rem 0 .3rem;line-height:1.55}
+pre code{background:none;color:inherit;padding:0;font-size:.84rem}
+.does{margin:.2rem 0 .9rem;color:var(--fg)}
+.does b{color:var(--acc)}
+.tw{overflow-x:auto;margin:.7rem 0;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700;white-space:nowrap}
+.tip{background:var(--tip);color:var(--tipfg);padding:10px 14px;border-radius:6px;margin:.8rem 0;font-size:.95rem}
+.flow{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:.7rem 0}
+.flow span{background:var(--accbg);color:var(--acc);padding:3px 10px;border-radius:99px;font-size:.88rem;font-weight:700}
+.flow i{font-style:normal;color:var(--mut)}
+.qa li{margin:.55rem 0}
+</style>
+
+</head>
+<body>
+<main>
+
+<div class="eyebrow">QA notes for freshers · API automation</div>
+<h1>API Testing: Postman and Rest Assured</h1>
+<p class="lead">Learn what an API is, how to test it by hand in Postman, and how to automate it with code.</p>
+
+<h2>1. What is an API?</h2>
+<p><b>API</b> means Application Programming Interface. It is the way one software talks to another.</p>
+<div class="tip">Restaurant example: you (the app screen) tell the waiter (API) what you want. The waiter goes to the kitchen (server and database) and brings the food (data) back. You never go to the kitchen yourself.</div>
+<div class="flow"><span>App / browser (client)</span><i>→ request →</i><span>API (server)</span><i>→ query →</i><span>Database</span></div>
+<p>When you open an app and see your orders, the app has sent a <b>request</b> to an API and shown the <b>response</b>.</p>
+<p><b>Why test APIs separately?</b> They are faster than UI tests, more stable (no buttons that move), and they find bugs earlier, even before the screen is ready.</p>
+
+<h2>2. Parts of a request</h2>
+<div class="tw"><table>
+<tr><th>Part</th><th>Meaning</th><th>Example</th></tr>
+<tr><td>URL / Endpoint</td><td>Address of the API.</td><td><code>https://api.shop.com/users/2</code></td></tr>
+<tr><td>Method</td><td>What action you want (see below).</td><td>GET, POST</td></tr>
+<tr><td>Headers</td><td>Extra information about the request.</td><td><code>Content-Type: application/json</code></td></tr>
+<tr><td>Query param</td><td>Filter added in the URL after <code>?</code>.</td><td><code>/users?page=2</code></td></tr>
+<tr><td>Path param</td><td>A value inside the URL path.</td><td><code>/users/<b>2</b></code></td></tr>
+<tr><td>Body</td><td>Data you send (for POST, PUT).</td><td><code>{"name":"Ravi"}</code></td></tr>
+<tr><td>Authorization</td><td>Proof of who you are: API key, Bearer token, username-password.</td><td><code>Authorization: Bearer abc123</code></td></tr>
+</table></div>
+
+<h2>3. HTTP methods (CRUD)</h2>
+<div class="tw"><table>
+<tr><th>Method</th><th>Use</th><th>CRUD</th></tr>
+<tr><td>GET</td><td>Read data</td><td>Read</td></tr>
+<tr><td>POST</td><td>Create new data</td><td>Create</td></tr>
+<tr><td>PUT</td><td>Replace the whole record</td><td>Update</td></tr>
+<tr><td>PATCH</td><td>Change only some fields</td><td>Update</td></tr>
+<tr><td>DELETE</td><td>Remove data</td><td>Delete</td></tr>
+</table></div>
+
+<h2>4. Status codes (the server's reply number)</h2>
+<div class="tw"><table>
+<tr><th>Code</th><th>Meaning</th></tr>
+<tr><td>200 OK</td><td>Request worked.</td></tr>
+<tr><td>201 Created</td><td>New record created (after POST).</td></tr>
+<tr><td>204 No Content</td><td>Worked, nothing to return (often after DELETE).</td></tr>
+<tr><td>400 Bad Request</td><td>Your request is wrong (missing or invalid data).</td></tr>
+<tr><td>401 Unauthorized</td><td>Not logged in or invalid token.</td></tr>
+<tr><td>403 Forbidden</td><td>Logged in, but not allowed to do this.</td></tr>
+<tr><td>404 Not Found</td><td>That record or URL does not exist.</td></tr>
+<tr><td>500 Internal Server Error</td><td>Problem on the server. This is a bug to report.</td></tr>
+</table></div>
+<p>Remember: <b>2xx</b> success, <b>4xx</b> client's mistake, <b>5xx</b> server's mistake.</p>
+
+<h2>5. JSON: the data format</h2>
+<pre><code>{
+  "id": 2,
+  "name": "Ravi",
+  "job": "QA",
+  "skills": ["Selenium", "API"]
+}</code></pre>
+<p class="does"><b>How to read it:</b> data is in <code>"key": value</code> pairs. <code>{ }</code> is an object, <code>[ ]</code> is a list. Values can be text (in quotes), numbers, true/false, or null.</p>
+
+<h2>6. Manual API testing in Postman</h2>
+<p>Postman is a free app to send requests and see responses without writing code. Basic use: choose method → paste URL → add headers/body → click <b>Send</b> → check status, body and time.</p>
+<div class="tw"><table>
+<tr><th>Postman word</th><th>Meaning</th></tr>
+<tr><td>Collection</td><td>A folder of saved requests.</td></tr>
+<tr><td>Environment</td><td>Saved variables such as <code>{{baseUrl}}</code> and <code>{{token}}</code>, so you can switch between QA and Staging easily.</td></tr>
+<tr><td>Tests tab</td><td>Place to write small JavaScript checks that run after the response.</td></tr>
+<tr><td>Collection Runner / Newman</td><td>Runs a whole collection at once. Newman does it from the command line, useful in automation pipelines.</td></tr>
+</table></div>
+<pre><code>pm.test("Status is 200", () =&gt; {
+  pm.response.to.have.status(200);
+});
+const json = pm.response.json();
+pm.expect(json.name).to.eql("Ravi");
+pm.environment.set("token", json.token);</code></pre>
+<p class="does"><b>What it does:</b> check the status code is 200 → read the response as JSON → check <code>name</code> equals "Ravi" → save the token in a variable so the next request can use it.</p>
+
+<h2>7. Automating APIs with Rest Assured (Java)</h2>
+<p><b>Rest Assured</b> is a Java library to write API tests in a simple "given-when-then" style. Together with TestNG or JUnit, it becomes an automated suite.</p>
+<div class="flow"><span>given: setup (headers, params, body)</span><i>→</i><span>when: send request</span><i>→</i><span>then: check response</span></div>
+<pre><code>import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;</code></pre>
+<p class="does"><b>What it does:</b> lets you write <code>given()</code>, <code>equalTo()</code> and others directly, without long class names.</p>
+<h3>GET request</h3>
+<pre><code>given().baseUri("https://api.shop.com")
+.when().get("/users/2")
+.then().statusCode(200).body("name", equalTo("Ravi"));</code></pre>
+<p class="does"><b>What it does:</b> set the base address → send GET to <code>/users/2</code> → check status is 200 → check the <code>name</code> field in the JSON is "Ravi".</p>
+<h3>POST request with body</h3>
+<pre><code>given().header("Content-Type", "application/json")
+.body("{\"name\":\"Ravi\",\"job\":\"QA\"}")
+.when().post("/users")
+.then().statusCode(201).body("job", equalTo("QA"));</code></pre>
+<p class="does"><b>What it does:</b> tell the server we are sending JSON → send the new user data → expect 201 Created → check the response has job "QA".</p>
+<h3>Query parameter and token</h3>
+<pre><code>given().queryParam("page", 2)
+.header("Authorization", "Bearer " + token)
+.when().get("/users")
+.then().statusCode(200);</code></pre>
+<p class="does"><b>What it does:</b> calls <code>/users?page=2</code> with a login token in the header.</p>
+<h3>Take a value from response for next call</h3>
+<pre><code>String id = given().body(payload).when().post("/users")
+            .then().extract().path("id");</code></pre>
+<p class="does"><b>What it does:</b> creates a user and saves the new <code>id</code> from the response, so you can then GET or DELETE that same user. This is called chaining.</p>
+<h3>Response time and headers</h3>
+<pre><code>.then().time(lessThan(2000L)).header("Content-Type", containsString("json"));</code></pre>
+<p class="does"><b>What it does:</b> response must come in under 2000 ms and be JSON.</p>
+
+<h2>8. What to check in an API test</h2>
+<ul>
+<li><b>Status code</b> is correct (200, 201, 404...).</li>
+<li><b>Response body</b>: correct fields and values, right data types, nothing missing.</li>
+<li><b>Headers</b>: content type, caching, security headers.</li>
+<li><b>Response time</b>: fast enough.</li>
+<li><b>Negative cases</b>: missing required field → 400, wrong token → 401, unknown id → 404, wrong method.</li>
+<li><b>Data check</b>: after POST, a GET returns the same data (and the database has it).</li>
+<li><b>Security basics</b>: a user must not read another user's data.</li>
+</ul>
+
+<h2>9. More API knowledge</h2>
+<h3>More status codes</h3>
+<div class="tw"><table>
+<tr><th>Code</th><th>Meaning</th></tr>
+<tr><td>301 / 302</td><td>Redirect: the resource moved permanently / temporarily.</td></tr>
+<tr><td>405 Method Not Allowed</td><td>Wrong method, such as DELETE on a read-only URL.</td></tr>
+<tr><td>409 Conflict</td><td>Clash with existing data, such as an email that already exists.</td></tr>
+<tr><td>415 Unsupported Media Type</td><td>Wrong <code>Content-Type</code> sent.</td></tr>
+<tr><td>422 Unprocessable Entity</td><td>Data format is right but values fail the rules.</td></tr>
+<tr><td>429 Too Many Requests</td><td>Rate limit crossed.</td></tr>
+<tr><td>502 / 503 / 504</td><td>Bad gateway / service unavailable / gateway timeout. Server side problems.</td></tr>
+</table></div>
+<h3>Authentication types</h3>
+<div class="tw"><table>
+<tr><th>Type</th><th>How it works</th></tr>
+<tr><td>Basic Auth</td><td>Username and password sent (encoded) with every request.</td></tr>
+<tr><td>API key</td><td>A secret key in the header or URL that identifies the app.</td></tr>
+<tr><td>Bearer token (JWT)</td><td>Login once, get a token, send it as <code>Authorization: Bearer &lt;token&gt;</code>. Tokens expire.</td></tr>
+<tr><td>OAuth 2.0</td><td>"Login with Google" style. The user allows an app to access data, and the app receives an access token.</td></tr>
+</table></div>
+<p><b>Authentication</b> = who are you? <b>Authorization</b> = what are you allowed to do?</p>
+<h3>REST principles</h3>
+<ul>
+<li><b>Client-server:</b> client and server are separate.</li>
+<li><b>Stateless:</b> each request carries everything needed. The server does not remember earlier requests.</li>
+<li><b>Resources and URLs:</b> things are named as nouns (<code>/users/2</code>), the method says the action.</li>
+<li><b>Uniform responses:</b> usually JSON with proper status codes.</li>
+<li><b>Cacheable</b> responses where suitable.</li>
+</ul>
+<h3>Common headers</h3>
+<p><code>Content-Type</code> (format of what you send), <code>Accept</code> (format you want back), <code>Authorization</code> (token), <code>Cache-Control</code>, <code>User-Agent</code>, <code>Set-Cookie / Cookie</code>.</p>
+<h3>Swagger / OpenAPI</h3>
+<p>A standard way to document an API. The Swagger page lists all endpoints, inputs and sample responses, and lets you try requests. Testers read it to write test cases.</p>
+<h3>Mock API</h3>
+<p>A fake API that returns fixed responses. It lets testing continue when the real API is not ready or is costly to call. Postman can create mock servers.</p>
+
+<h2>10. More Postman</h2>
+<ul>
+<li><b>Variables:</b> <code>{{baseUrl}}</code> style. Scopes: global, collection, environment, local.</li>
+<li><b>Pre-request script:</b> JavaScript that runs <b>before</b> the request, for example to create a random email.</li>
+<li><b>Chaining:</b> save a value from one response (token, id) in a variable and use it in the next request.</li>
+<li><b>Data-driven run:</b> run a collection with a CSV or JSON file so each row is one test.</li>
+<li><b>Newman:</b> command line runner for CI/CD.</li>
+</ul>
+<pre><code>pm.environment.set("email", "user" + Date.now() + "@test.com");
+pm.test("Response time under 2s", () =&gt; pm.expect(pm.response.responseTime).to.be.below(2000));
+pm.test("Has users", () =&gt; pm.expect(pm.response.json().data.length).to.be.above(0));</code></pre>
+<p class="does"><b>What it does:</b> creates a new unique email for every run (a pre-request script) → checks the response came within 2 seconds → checks that the list of users is not empty.</p>
+<pre><code>newman run collection.json -e qa-environment.json</code></pre>
+<p class="does"><b>What it does:</b> runs the whole collection from the terminal using the QA environment values.</p>
+
+<h2>11. More Rest Assured</h2>
+<pre><code>Response res = given().when().get("/users/2");
+int code = res.getStatusCode();
+String name = res.jsonPath().getString("data.first_name");
+long ms = res.getTime();</code></pre>
+<p class="does"><b>What it does:</b> stores the whole response in a <code>Response</code> object, then reads the status code, one JSON value (using a path) and the time taken. Use this when you need to do several checks or use values later.</p>
+<pre><code>.then().body("data.id", hasItems(1, 2))
+       .body("data.size()", greaterThan(0))
+       .body(matchesJsonSchemaInClasspath("user-schema.json"));</code></pre>
+<p class="does"><b>What it does:</b> the list of ids contains 1 and 2 → list is not empty → the whole response structure matches a saved JSON schema file (field names and types). Schema validation catches missing or renamed fields.</p>
+<pre><code>RequestSpecification spec = new RequestSpecBuilder()
+    .setBaseUri("https://api.shop.com")
+    .addHeader("Authorization", "Bearer " + token).build();
+given().spec(spec).when().get("/users").then().statusCode(200);</code></pre>
+<p class="does"><b>What it does:</b> keeps common settings (URL, token) in one reusable object, so you do not repeat them in every test.</p>
+<pre><code>given().log().all().when().get("/users").then().log().all();</code></pre>
+<p class="does"><b>What it does:</b> prints the full request and response, which is very helpful to debug a failing test.</p>
+<p><b>POJO:</b> instead of typing JSON text, create a Java class (<code>User</code> with name and job) and pass the object to <code>.body(user)</code>. Rest Assured converts it to JSON (serialization). The reverse, JSON to object, is deserialization.</p>
+
+<h2>12. One full CRUD flow</h2>
+<p>A typical end-to-end API test uses the result of one call in the next.</p>
+<div class="flow"><span>POST create user (get id)</span><i>→</i><span>GET user by id (check data)</span><i>→</i><span>PUT / PATCH update</span><i>→</i><span>GET again (check change)</span><i>→</i><span>DELETE</span><i>→</i><span>GET (expect 404)</span></div>
+
+<h2>13. Test cases for one API (POST /users)</h2>
+<div class="tw"><table>
+<tr><th>Type</th><th>What to try</th><th>Expected</th></tr>
+<tr><td>Valid</td><td>All fields correct</td><td>201, id returned</td></tr>
+<tr><td>Missing field</td><td>No <code>name</code></td><td>400 or 422 with clear message</td></tr>
+<tr><td>Wrong data type</td><td><code>"age": "abc"</code></td><td>400 or 422</td></tr>
+<tr><td>Boundary</td><td>Name with 0, 1, max and max+1 characters</td><td>Rules followed</td></tr>
+<tr><td>Duplicate</td><td>Same email again</td><td>409 or 400</td></tr>
+<tr><td>Extra fields</td><td>Unknown field in the body</td><td>Ignored or rejected as per rule</td></tr>
+<tr><td>Wrong header</td><td>No or wrong <code>Content-Type</code></td><td>415</td></tr>
+<tr><td>Auth</td><td>No token, expired token, token of another user</td><td>401 or 403</td></tr>
+<tr><td>Security</td><td>SQL or script text in values</td><td>Safe handling, no 500 error</td></tr>
+<tr><td>Large body</td><td>Huge text or very big payload</td><td>Rejected cleanly</td></tr>
+<tr><td>Wrong method</td><td>PUT on this URL</td><td>405</td></tr>
+</table></div>
+<p><b>Common API bugs:</b> wrong status code (200 for an error), 500 errors for bad input, missing validation, sensitive data (passwords, tokens) in the response, wrong data types, slow responses, one user able to read another user's data.</p>
+
+<h2>14. API testing vs UI testing</h2>
+<div class="tw"><table>
+<tr><th></th><th>API testing</th><th>UI testing</th></tr>
+<tr><td>Speed</td><td>Very fast</td><td>Slower</td></tr>
+<tr><td>Stability</td><td>Stable, no screens involved</td><td>Can break when the screen changes</td></tr>
+<tr><td>Starts</td><td>Early, before the UI is ready</td><td>After the UI is built</td></tr>
+<tr><td>Checks</td><td>Business logic and data</td><td>What the user sees and does</td></tr>
+</table></div>
+<p>A good plan uses many API tests, fewer UI tests for key journeys, and manual testing for new and exploratory work. For speed under many users, a tool like <b>JMeter</b> is used (performance testing).</p>
+
+<h2>15. SQL basics a tester needs</h2>
+<p>After an API or UI action, testers often check the database to confirm the data is saved correctly.</p>
+<div class="tw"><table>
+<tr><th>Query</th><th>What it does</th></tr>
+<tr><td><code>SELECT * FROM users;</code></td><td>Show all rows of the table <code>users</code>.</td></tr>
+<tr><td><code>SELECT name, email FROM users WHERE id = 2;</code></td><td>Show chosen columns for one record.</td></tr>
+<tr><td><code>SELECT COUNT(*) FROM orders WHERE status = 'PAID';</code></td><td>Count paid orders.</td></tr>
+<tr><td><code>SELECT * FROM users ORDER BY created_at DESC LIMIT 5;</code></td><td>Latest 5 users.</td></tr>
+<tr><td><code>SELECT u.name, o.amount FROM users u JOIN orders o ON u.id = o.user_id;</code></td><td>Join two tables to see each user with their orders.</td></tr>
+<tr><td><code>SELECT status, COUNT(*) FROM orders GROUP BY status;</code></td><td>Count of orders for each status.</td></tr>
+<tr><td><code>INSERT</code> / <code>UPDATE</code> / <code>DELETE</code></td><td>Add, change or remove rows. Take care: always use <code>WHERE</code> with UPDATE and DELETE.</td></tr>
+</table></div>
+<p><b>Keys:</b> a <b>primary key</b> uniquely identifies a row (like <code>id</code>). A <b>foreign key</b> points to the primary key of another table. <b>DELETE</b> removes rows (can have WHERE), <b>TRUNCATE</b> removes all rows fast, <b>DROP</b> deletes the whole table.</p>
+
+<h2>16. Quick interview answers</h2>
+<ul class="qa">
+<li><b>What is an API?</b> A way for two applications to talk to each other using requests and responses.</li>
+<li><b>PUT vs PATCH?</b> PUT replaces the whole record. PATCH changes only the given fields.</li>
+<li><b>401 vs 403?</b> 401: not authenticated (who are you?). 403: authenticated but not allowed.</li>
+<li><b>What is idempotent?</b> Sending the same request many times gives the same result. GET, PUT and DELETE are idempotent. POST is not (it creates a new record each time).</li>
+<li><b>REST vs SOAP?</b> REST is lighter and usually uses JSON. SOAP is older, uses XML and strict rules.</li>
+<li><b>What is a payload?</b> The data sent in the request body.</li>
+<li><b>How do you handle auth in tests?</b> Get a token from the login API once, store it in a variable, and send it in the header of other requests.</li>
+<li><b>Postman vs Rest Assured?</b> Postman: quick manual testing and small checks. Rest Assured: full code-based automation that fits in a CI/CD pipeline.</li>
+<li><b>PUT vs POST?</b> POST creates a new resource. PUT replaces an existing one at a known URL. PUT is idempotent.</li>
+<li><b>Authentication vs authorization?</b> Who you are vs what you may do.</li>
+<li><b>What is JWT?</b> A signed token given after login and sent in the header. It has an expiry time.</li>
+<li><b>What is Swagger?</b> A page that documents an API and lets you try it.</li>
+<li><b>How do you validate the response structure?</b> JSON schema validation, or check each field and its data type.</li>
+<li><b>What if the API returns 500 for wrong input?</b> It is a bug. The server should return a 4xx error with a message.</li>
+<li><b>What is serialization?</b> Converting a Java object to JSON for the request. Deserialization is the reverse.</li>
+<li><b>How do you test an API that is not ready?</b> Use a mock server with expected responses.</li>
+<li><b>What is rate limiting?</b> The API blocks a user who sends too many requests in a time window (429).</li>
+<li><b>DELETE vs TRUNCATE vs DROP?</b> Remove selected rows / remove all rows / remove the table itself.</li>
+<li><b>Primary key vs foreign key?</b> Unique identity of a row vs link to another table's row.</li>
+<li><b>INNER JOIN vs LEFT JOIN?</b> Inner: only rows that match in both tables. Left: all rows of the left table, with matches from the right if any.</li>
+</ul>
+</main>
+</body>
+</html>

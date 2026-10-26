@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Git and GitHub Basics</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: single readable column of study notes; command tables and short code blocks */
+:root{--bg:#f5f7f9;--card:#ffffff;--fg:#17212b;--mut:#56626e;--line:#dce2e8;--acc:#0b6e69;--accbg:#e0f1ef;--tip:#fff3d1;--tipfg:#5f4300;--code:#0f1b24;--codefg:#d6e5ee;--hd:'Bricolage Grotesque',system-ui,sans-serif;--bd:'Atkinson Hyperlegible',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1519;--card:#151e24;--fg:#e4ebf0;--mut:#9aa8b3;--line:#26323a;--acc:#4fd1c5;--accbg:#12302e;--tip:#3a2f10;--tipfg:#f2d789;--code:#0a1014;--codefg:#cfe2ec;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1519;--card:#151e24;--fg:#e4ebf0;--mut:#9aa8b3;--line:#26323a;--acc:#4fd1c5;--accbg:#12302e;--tip:#3a2f10;--tipfg:#f2d789;--code:#0a1014;--codefg:#cfe2ec;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.65 var(--bd);padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:760px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:700}
+h1{font:700 2rem/1.15 var(--hd);margin:.3rem 0 .6rem;text-wrap:balance}
+h2{font:700 1.4rem/1.25 var(--hd);margin:2.4rem 0 .6rem;padding-top:1.2rem;border-top:1px solid var(--line);text-wrap:balance}
+h3{font:600 1.05rem/1.3 var(--hd);margin:1.3rem 0 .3rem}
+p,ul,ol{margin:.5rem 0}
+li{margin:.25rem 0}
+.lead{color:var(--mut);font-size:1.05rem}
+code{font-family:var(--mono);font-size:.86em;background:var(--accbg);color:var(--acc);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);color:var(--codefg);padding:14px 16px;border-radius:6px;overflow-x:auto;margin:.6rem 0 .3rem;line-height:1.55}
+pre code{background:none;color:inherit;padding:0;font-size:.84rem}
+.does{margin:.2rem 0 .9rem;color:var(--fg)}
+.does b{color:var(--acc)}
+.tw{overflow-x:auto;margin:.7rem 0;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700;white-space:nowrap}
+.tip{background:var(--tip);color:var(--tipfg);padding:10px 14px;border-radius:6px;margin:.8rem 0;font-size:.95rem}
+.flow{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:.7rem 0}
+.flow span{background:var(--accbg);color:var(--acc);padding:3px 10px;border-radius:99px;font-size:.88rem;font-weight:700}
+.flow i{font-style:normal;color:var(--mut)}
+.qa li{margin:.55rem 0}
+</style>
+
+</head>
+<body>
+<main>
+
+<div class="eyebrow">QA notes for freshers · Git and GitHub</div>
+<h1>Git and GitHub for Beginners</h1>
+<p class="lead">Every software team uses Git. As a tester you will store and share your automation code with it.</p>
+
+<h2>1. What are Git and GitHub?</h2>
+<ul>
+<li><b>Git</b> is a tool installed on your computer. It saves every version of your code, so you can go back if something breaks, and many people can work on the same code without overwriting each other.</li>
+<li><b>GitHub</b> is a website that stores Git projects online (similar sites: GitLab, Bitbucket). It adds sharing, review and teamwork on top of Git.</li>
+</ul>
+<div class="tip">Simple idea: Git is like "save history" in a game, and GitHub is the cloud where the team keeps the shared save.</div>
+
+<h2>2. Words you must know</h2>
+<div class="tw"><table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td>Repository (repo)</td><td>A project folder tracked by Git.</td></tr>
+<tr><td>Commit</td><td>A saved snapshot of your changes, with a message.</td></tr>
+<tr><td>Branch</td><td>A separate line of work. You can change code safely without touching the main code.</td></tr>
+<tr><td>main (master)</td><td>The main, stable branch.</td></tr>
+<tr><td>Remote / origin</td><td>The online copy of the repo (on GitHub). "origin" is its default nickname.</td></tr>
+<tr><td>Clone</td><td>Download a full copy of a remote repo to your computer.</td></tr>
+<tr><td>Fork</td><td>Your own personal copy of someone else's repo on GitHub.</td></tr>
+<tr><td>Pull request (PR)</td><td>A request to merge your branch into main. Teammates review it first.</td></tr>
+<tr><td>Merge</td><td>Combining one branch's changes into another.</td></tr>
+<tr><td>Merge conflict</td><td>Two people changed the same lines; Git cannot decide, so you choose manually.</td></tr>
+<tr><td>Staging area</td><td>Waiting room where you place changes before committing.</td></tr>
+</table></div>
+
+<h2>3. How the work flows</h2>
+<div class="flow"><span>Working folder</span><i>→ git add →</i><span>Staging area</span><i>→ git commit →</i><span>Local repo</span><i>→ git push →</i><span>GitHub (remote)</span></div>
+<p>And in the other direction, <code>git pull</code> brings the latest changes from GitHub to your computer.</p>
+
+<h2>4. First-time setup</h2>
+<pre><code>git config --global user.name "Your Name"
+git config --global user.email "you@example.com"</code></pre>
+<p class="does"><b>What it does:</b> tells Git who you are. This name and email appear on every commit you make. Do it once per computer.</p>
+
+<h2>5. Commands you will use daily</h2>
+<div class="tw"><table>
+<tr><th>Command</th><th>What it does</th></tr>
+<tr><td><code>git clone &lt;url&gt;</code></td><td>Download a repo from GitHub.</td></tr>
+<tr><td><code>git status</code></td><td>Show which files changed. Use it often.</td></tr>
+<tr><td><code>git add file.java</code></td><td>Put one file in staging. <code>git add .</code> adds all changed files.</td></tr>
+<tr><td><code>git commit -m "message"</code></td><td>Save staged changes with a message.</td></tr>
+<tr><td><code>git push</code></td><td>Upload your commits to GitHub.</td></tr>
+<tr><td><code>git pull</code></td><td>Download and merge the latest changes from GitHub.</td></tr>
+<tr><td><code>git log --oneline</code></td><td>Show the commit history in short form.</td></tr>
+<tr><td><code>git diff</code></td><td>Show exactly what lines you changed.</td></tr>
+<tr><td><code>git fetch</code></td><td>Download remote changes but do not merge yet.</td></tr>
+</table></div>
+
+<h3>Branch commands</h3>
+<div class="tw"><table>
+<tr><th>Command</th><th>What it does</th></tr>
+<tr><td><code>git branch</code></td><td>List branches.</td></tr>
+<tr><td><code>git checkout -b feature/login-tests</code></td><td>Create a new branch and move to it. (<code>git switch -c</code> does the same.)</td></tr>
+<tr><td><code>git checkout main</code></td><td>Move to an existing branch. (<code>git switch main</code> also works.)</td></tr>
+<tr><td><code>git merge feature/login-tests</code></td><td>Merge that branch into the branch you are on.</td></tr>
+<tr><td><code>git branch -d feature/login-tests</code></td><td>Delete a branch you no longer need.</td></tr>
+</table></div>
+
+<h3>Undo and save-for-later commands</h3>
+<div class="tw"><table>
+<tr><th>Command</th><th>What it does</th></tr>
+<tr><td><code>git restore file.java</code></td><td>Throw away your unsaved changes in that file.</td></tr>
+<tr><td><code>git restore --staged file.java</code></td><td>Remove a file from staging, keep your changes.</td></tr>
+<tr><td><code>git commit --amend</code></td><td>Fix the last commit message or add a forgotten file (only before pushing).</td></tr>
+<tr><td><code>git revert &lt;commit-id&gt;</code></td><td>Safely undo an old commit by making a new opposite commit.</td></tr>
+<tr><td><code>git stash</code> / <code>git stash pop</code></td><td>Temporarily keep unfinished work aside, then bring it back.</td></tr>
+</table></div>
+<div class="tip">Be careful with <code>git reset --hard</code>. It deletes your changes permanently. Ask a senior before using it.</div>
+
+<h2>6. A normal working day</h2>
+<pre><code>git checkout main
+git pull
+git checkout -b feature/add-search-tests
+# ... write your test code ...
+git status
+git add .
+git commit -m "Add search page automation tests"
+git push -u origin feature/add-search-tests</code></pre>
+<p class="does"><b>Step by step:</b> go to main → get the latest code → make your own branch → work → check what changed → stage the files → commit with a clear message → push the branch to GitHub (<code>-u</code> links your local branch to the remote one, needed only the first time). Then open GitHub and create a <b>pull request</b>.</p>
+
+<h2>7. Pull request (PR) process</h2>
+<ol>
+<li>Push your branch and click "Compare &amp; pull request" on GitHub.</li>
+<li>Write a short title and description of what you changed.</li>
+<li>Teammates review and may leave comments. You fix them and push again; the PR updates itself.</li>
+<li>After approval (and passing automatic checks), the PR is merged into main.</li>
+</ol>
+
+<h2>8. Merge conflict</h2>
+<p>When Git cannot merge automatically, it marks the file like this:</p>
+<pre><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+String url = "https://qa.example.com";
+=======
+String url = "https://staging.example.com";
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/add-search-tests</code></pre>
+<p class="does"><b>How to fix:</b> the top part is your current branch, the bottom part is the incoming branch. Keep the right line (or combine both), delete the <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>, <code>=======</code>, <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> lines, then run <code>git add</code> and <code>git commit</code>.</p>
+
+<h2>9. Good habits</h2>
+<ul>
+<li><b>Never</b> work directly on main. Always create a branch.</li>
+<li><b>Pull before you start</b> work, to avoid conflicts.</li>
+<li>Commit small and often with clear messages: "Add login test for invalid password", not "changes" or "fix".</li>
+<li>Use a <code>.gitignore</code> file to keep unwanted files out of Git, such as <code>target/</code>, <code>.idea/</code>, logs, and screenshots.</li>
+<li><b>Never commit passwords, tokens or API keys.</b> Once pushed, they are visible to everyone with access.</li>
+</ul>
+
+<h2>10. How testers use Git</h2>
+<ul>
+<li>Automation code (Selenium, Rest Assured) lives in a repo, just like developer code.</li>
+<li>Your test scripts go through branches and pull requests.</li>
+<li>CI tools (Jenkins, GitHub Actions) pull the repo and run your tests automatically on each change.</li>
+<li>Testers also check a bug's linked commit or PR to see what the developer changed, so they know what to retest.</li>
+</ul>
+
+<h2>11. More commands and ideas</h2>
+<h3>Starting a project from scratch</h3>
+<pre><code>git init
+git remote add origin https://github.com/yourname/qa-project.git
+git branch -M main
+git push -u origin main</code></pre>
+<p class="does"><b>What it does:</b> <code>init</code> makes the folder a Git repo → connects it to an empty GitHub repo called origin → names the branch main → uploads the first commits.</p>
+<h3>Three kinds of reset</h3>
+<div class="tw"><table>
+<tr><th>Command</th><th>Commit</th><th>Staging</th><th>Your files</th></tr>
+<tr><td><code>git reset --soft HEAD~1</code></td><td>Undone</td><td>Kept</td><td>Kept</td></tr>
+<tr><td><code>git reset --mixed HEAD~1</code></td><td>Undone</td><td>Cleared</td><td>Kept</td></tr>
+<tr><td><code>git reset --hard HEAD~1</code></td><td>Undone</td><td>Cleared</td><td><b>Lost</b></td></tr>
+</table></div>
+<p><code>HEAD</code> means the commit you are on now. <code>HEAD~1</code> means one commit before it. Use reset only on commits you have <b>not pushed</b>. For pushed commits use <code>git revert</code>.</p>
+<h3>Other useful commands</h3>
+<div class="tw"><table>
+<tr><th>Command</th><th>What it does</th></tr>
+<tr><td><code>git remote -v</code></td><td>Show the remote URLs.</td></tr>
+<tr><td><code>git cherry-pick &lt;commit-id&gt;</code></td><td>Copy one particular commit onto your current branch.</td></tr>
+<tr><td><code>git tag v1.0</code></td><td>Mark a commit with a name, such as a release.</td></tr>
+<tr><td><code>git blame file.java</code></td><td>Show who changed each line and when.</td></tr>
+<tr><td><code>git show &lt;commit-id&gt;</code></td><td>Show the details of one commit.</td></tr>
+<tr><td><code>git rebase main</code></td><td>Move your branch's commits on top of the latest main.</td></tr>
+<tr><td><code>git branch -a</code></td><td>List local and remote branches.</td></tr>
+<tr><td><code>git log --oneline --graph</code></td><td>History with a branch drawing.</td></tr>
+</table></div>
+<h3>Merge vs rebase</h3>
+<ul>
+<li><b>Merge:</b> joins two branches with a merge commit. Keeps full history. Safe and simple.</li>
+<li><b>Rebase:</b> replays your commits on top of another branch for a straight, clean history. Never rebase branches that others are using.</li>
+</ul>
+<h3>.gitignore example</h3>
+<pre><code>target/
+.idea/
+*.log
+screenshots/
+config/secrets.properties</code></pre>
+<p class="does"><b>What it does:</b> Git will skip the build folder, IDE settings, log files, screenshots and a secrets file. Files already committed must be removed with <code>git rm --cached</code> first.</p>
+<h3>HTTPS vs SSH for GitHub</h3>
+<p><b>HTTPS</b> asks for a username and a personal access token. <b>SSH</b> uses a key pair saved once on your computer, so you do not type anything again. Use <code>ssh-keygen</code> to create the key and add the public key to GitHub settings.</p>
+
+<h2>12. Branching strategy in companies</h2>
+<div class="tw"><table>
+<tr><th>Branch</th><th>Purpose</th></tr>
+<tr><td>main</td><td>Stable, ready-for-release code.</td></tr>
+<tr><td>develop</td><td>Where the team's finished features come together for testing.</td></tr>
+<tr><td>feature/xyz</td><td>One new feature or one set of tests.</td></tr>
+<tr><td>bugfix/xyz</td><td>A fix for a bug.</td></tr>
+<tr><td>hotfix/xyz</td><td>A quick fix straight from main for a live problem.</td></tr>
+<tr><td>release/1.2</td><td>Final stabilizing before a version is released.</td></tr>
+</table></div>
+
+<h2>13. GitHub features you will see</h2>
+<ul>
+<li><b>Issues:</b> track tasks and bugs (like Jira tickets).</li>
+<li><b>Pull request reviews:</b> reviewers can comment, request changes or approve. Be polite and clear in comments.</li>
+<li><b>README.md:</b> the first page of the project. Explain what it is and how to run the tests.</li>
+<li><b>Branch protection:</b> main cannot be pushed to directly; a PR with approval and passing checks is needed.</li>
+<li><b>GitHub Actions:</b> runs your tests automatically when code is pushed.</li>
+</ul>
+<pre><code>name: Run tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { java-version: '17', distribution: 'temurin' }
+      - run: mvn test</code></pre>
+<p class="does"><b>What it does:</b> on every push or pull request, GitHub starts a fresh machine → downloads your code → sets up Java 17 → runs <code>mvn test</code>. If a test fails, the PR shows a red cross. This is basic CI (Continuous Integration). Jenkins does the same job on your own server.</p>
+<h3>CI vs CD</h3>
+<p><b>CI (Continuous Integration):</b> code is built and tested automatically on every change. <b>CD (Continuous Delivery/Deployment):</b> after tests pass, the app is released to an environment automatically or with one click.</p>
+
+<h2>14. Quick interview answers</h2>
+<ul class="qa">
+<li><b>Git vs GitHub?</b> Git is the version control tool on your computer. GitHub is the online platform to host and share Git repos.</li>
+<li><b>git pull vs git fetch?</b> <code>fetch</code> only downloads changes. <code>pull</code> = fetch + merge.</li>
+<li><b>git merge vs git rebase?</b> Merge joins branches and keeps history as it happened. Rebase moves your commits on top of the latest main to make a straight history. (Fresher level: knowing merge is enough.)</li>
+<li><b>What is a branch for?</b> To work on a feature or fix without disturbing the stable code.</li>
+<li><b>What is git stash?</b> Temporarily saves unfinished changes so you can switch branches with a clean folder.</li>
+<li><b>How do you solve a merge conflict?</b> Open the file, decide which lines to keep, remove the markers, add, and commit.</li>
+<li><b>What is a pull request?</b> A request for teammates to review your changes before they are merged.</li>
+<li><b>How do you undo the last commit but keep the changes?</b> <code>git reset --soft HEAD~1</code>.</li>
+<li><b>git init vs git clone?</b> <code>init</code> makes a new empty repo. <code>clone</code> copies an existing repo from a server.</li>
+<li><b>Revert vs reset?</b> Reset moves history back (use for local commits). Revert adds a new commit that undoes an old one (safe for pushed commits).</li>
+<li><b>What is HEAD?</b> A pointer to the commit or branch you are working on.</li>
+<li><b>What is cherry-pick?</b> Copying one specific commit to another branch.</li>
+<li><b>Fork vs clone?</b> Fork makes your own copy on GitHub. Clone downloads a repo to your computer.</li>
+<li><b>What is .gitignore?</b> A file listing what Git should not track.</li>
+<li><b>Staging area?</b> The place where you collect changes before committing.</li>
+<li><b>What is CI/CD?</b> Automatic build, test and release on every change. Tools: Jenkins, GitHub Actions.</li>
+<li><b>How did you use Git as a tester?</b> Cloned the framework, made a feature branch, added tests, raised a PR, fixed review comments, merged.</li>
+</ul>
+</main>
+</body>
+</html>

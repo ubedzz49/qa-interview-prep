@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Selenium UI Automation</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: single readable column of study notes; code blocks followed by plain-language explanations */
+:root{--bg:#f5f7f9;--card:#ffffff;--fg:#17212b;--mut:#56626e;--line:#dce2e8;--acc:#0b6e69;--accbg:#e0f1ef;--tip:#fff3d1;--tipfg:#5f4300;--code:#0f1b24;--codefg:#d6e5ee;--hd:'Bricolage Grotesque',system-ui,sans-serif;--bd:'Atkinson Hyperlegible',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1519;--card:#151e24;--fg:#e4ebf0;--mut:#9aa8b3;--line:#26323a;--acc:#4fd1c5;--accbg:#12302e;--tip:#3a2f10;--tipfg:#f2d789;--code:#0a1014;--codefg:#cfe2ec;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1519;--card:#151e24;--fg:#e4ebf0;--mut:#9aa8b3;--line:#26323a;--acc:#4fd1c5;--accbg:#12302e;--tip:#3a2f10;--tipfg:#f2d789;--code:#0a1014;--codefg:#cfe2ec;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:16px/1.65 var(--bd);padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:760px;margin:0 auto}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:700}
+h1{font:700 2rem/1.15 var(--hd);margin:.3rem 0 .6rem;text-wrap:balance}
+h2{font:700 1.4rem/1.25 var(--hd);margin:2.4rem 0 .6rem;padding-top:1.2rem;border-top:1px solid var(--line);text-wrap:balance}
+h3{font:600 1.05rem/1.3 var(--hd);margin:1.3rem 0 .3rem}
+p,ul,ol{margin:.5rem 0}
+li{margin:.25rem 0}
+.lead{color:var(--mut);font-size:1.05rem}
+code{font-family:var(--mono);font-size:.86em;background:var(--accbg);color:var(--acc);padding:1px 5px;border-radius:4px}
+pre{background:var(--code);color:var(--codefg);padding:14px 16px;border-radius:6px;overflow-x:auto;margin:.6rem 0 .3rem;line-height:1.55}
+pre code{background:none;color:inherit;padding:0;font-size:.84rem}
+.does{margin:.2rem 0 .9rem;color:var(--fg)}
+.does b{color:var(--acc)}
+.tw{overflow-x:auto;margin:.7rem 0;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:.93rem}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700;white-space:nowrap}
+.tip{background:var(--tip);color:var(--tipfg);padding:10px 14px;border-radius:6px;margin:.8rem 0;font-size:.95rem}
+.flow{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:.7rem 0}
+.flow span{background:var(--accbg);color:var(--acc);padding:3px 10px;border-radius:99px;font-size:.88rem;font-weight:700}
+.flow i{font-style:normal;color:var(--mut)}
+.qa li{margin:.55rem 0}
+</style>
+
+</head>
+<body>
+<main>
+
+<div class="eyebrow">QA notes for freshers · UI automation</div>
+<h1>Selenium Basics to Mid Level</h1>
+<p class="lead">Selenium is the most asked automation tool in fresher interviews. Examples use Java, the most common language with Selenium.</p>
+
+<h2>1. What is automation testing?</h2>
+<p>In manual testing a person clicks and types. In <b>automation testing</b> we write a program (a script) that does the clicking and typing for us, and checks the result by itself.</p>
+<ul>
+<li><b>Good for:</b> tests that repeat again and again (regression), tests with lots of data, tests that must run at night.</li>
+<li><b>Not good for:</b> a feature that changes every day, tests that run only once, checking how the design "feels".</li>
+</ul>
+
+<h2>2. What is Selenium?</h2>
+<p>Selenium is a free tool that controls a web browser (Chrome, Firefox, Edge) through code. It works only for <b>web</b> apps. Main parts:</p>
+<div class="tw"><table>
+<tr><th>Part</th><th>Use</th></tr>
+<tr><td>WebDriver</td><td>The main part. Code you write to control the browser.</td></tr>
+<tr><td>Grid</td><td>Runs tests on many browsers and machines at the same time.</td></tr>
+<tr><td>IDE</td><td>Browser plugin to record and play tests. Good for learning, not for real projects.</td></tr>
+</table></div>
+<h3>How it works</h3>
+<div class="flow"><span>Your test script</span><i>→</i><span>Selenium WebDriver</span><i>→</i><span>Browser driver (ChromeDriver)</span><i>→</i><span>Browser</span></div>
+<p>Your code sends a command like "click this button". The driver passes it to the browser. The browser does it and sends back the result.</p>
+
+<h2>3. Your first script</h2>
+<p>You add the Selenium library using Maven (a tool that downloads libraries). In <code>pom.xml</code>:</p>
+<pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;org.seleniumhq.selenium&lt;/groupId&gt;
+  &lt;artifactId&gt;selenium-java&lt;/artifactId&gt;
+  &lt;version&gt;4.x.x&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<p class="does"><b>What it does:</b> tells Maven to download Selenium so you can use it. Selenium 4 also downloads the browser driver automatically.</p>
+
+<pre><code>WebDriver driver = new ChromeDriver();
+driver.get("https://example.com/login");
+driver.findElement(By.id("username")).sendKeys("testuser");
+driver.findElement(By.id("password")).sendKeys("Pass@123");
+driver.findElement(By.cssSelector("button[type='submit']")).click();
+Assert.assertEquals(driver.getTitle(), "Dashboard");
+driver.quit();</code></pre>
+<p class="does"><b>Line by line:</b> open Chrome → go to the login page → type in the username box → type in the password box → click the Login button → check the page title is "Dashboard" (test passes or fails here) → close the browser.</p>
+
+<h2>4. Locators: how Selenium finds things on a page</h2>
+<p>A web page is made of <b>elements</b> (buttons, text boxes, links). To click a button, Selenium must first find it. The way of finding is called a <b>locator</b>.</p>
+<div class="tw"><table>
+<tr><th>Locator</th><th>Example</th><th>Note</th></tr>
+<tr><td>id</td><td><code>By.id("email")</code></td><td>Best choice. Fast and usually unique.</td></tr>
+<tr><td>name</td><td><code>By.name("q")</code></td><td>Good if id is missing.</td></tr>
+<tr><td>className</td><td><code>By.className("btn")</code></td><td>Many elements may share it.</td></tr>
+<tr><td>tagName</td><td><code>By.tagName("a")</code></td><td>Used to get lists, like all links.</td></tr>
+<tr><td>linkText</td><td><code>By.linkText("Forgot password?")</code></td><td>For links, full visible text. Also <code>partialLinkText</code>.</td></tr>
+<tr><td>cssSelector</td><td><code>By.cssSelector("input#email")</code></td><td>Fast and flexible.</td></tr>
+<tr><td>xpath</td><td><code>By.xpath("//button[text()='Login']")</code></td><td>Most powerful. Can find by text and parent/child.</td></tr>
+</table></div>
+<h3>XPath and CSS cheat sheet</h3>
+<pre><code>//input[@id='email']                  // XPath: input whose id is email
+//button[text()='Login']               // XPath: button with exact text Login
+//div[contains(@class,'error')]        // XPath: class contains the word error
+input#email        // CSS: input with id email
+input.form-ctrl    // CSS: input with class form-ctrl
+button[type='submit']   // CSS: button with attribute type=submit</code></pre>
+<p><b>Absolute XPath</b> (<code>/html/body/div[1]/...</code>) breaks when the page changes a little. <b>Relative XPath</b> (starts with <code>//</code>) is safer. Prefer id, then CSS, then relative XPath.</p>
+<div class="tip">To get a locator: right-click the element in Chrome → Inspect → look at its id/class, or right-click the HTML → Copy → Copy selector / XPath.</div>
+
+<h2>5. Common actions on elements</h2>
+<pre><code>WebElement box = driver.findElement(By.id("search"));
+box.sendKeys("laptop");
+box.clear();
+driver.findElement(By.id("go")).click();
+String msg = driver.findElement(By.id("msg")).getText();
+boolean shown = driver.findElement(By.id("msg")).isDisplayed();</code></pre>
+<p class="does"><b>What it does:</b> find the search box and store it → type "laptop" → clear the text → click the Go button → read the visible text of the message → check whether the message is visible (true/false). Also available: <code>isEnabled()</code>, <code>isSelected()</code> (for checkbox/radio), <code>getAttribute("value")</code>.</p>
+<pre><code>List&lt;WebElement&gt; rows = driver.findElements(By.tagName("tr"));
+System.out.println(rows.size());</code></pre>
+<p class="does"><b>What it does:</b> <code>findElement</code> returns <b>one</b> element and throws an error if not found. <code>findElements</code> (with s) returns a <b>list</b>, and an empty list if nothing is found. Here we count the table rows.</p>
+<h3>Browser commands</h3>
+<pre><code>driver.navigate().back();
+driver.navigate().refresh();
+driver.manage().window().maximize();
+driver.getCurrentUrl();</code></pre>
+<p class="does"><b>What it does:</b> go back one page, reload the page, make the window full size, and read the current URL.</p>
+
+<h2>6. Waits (very important, always asked)</h2>
+<p>Pages take time to load. If Selenium looks for a button before it appears, you get <code>NoSuchElementException</code>. A <b>wait</b> tells Selenium to wait for the element.</p>
+<div class="tw"><table>
+<tr><th>Wait</th><th>How it works</th></tr>
+<tr><td>Implicit</td><td>One global setting. For every find, wait up to N seconds before failing.</td></tr>
+<tr><td>Explicit</td><td>Wait for one specific condition on one element (visible, clickable). Most recommended.</td></tr>
+<tr><td>Fluent</td><td>Like explicit, but you also set how often to check (polling) and which errors to ignore.</td></tr>
+<tr><td>Thread.sleep</td><td>Fixed pause. Avoid it: it always waits the full time even if the page is ready.</td></tr>
+</table></div>
+<pre><code>driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));</code></pre>
+<p class="does"><b>What it does:</b> sets an implicit wait of 5 seconds for the whole test.</p>
+<pre><code>WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("msg")));</code></pre>
+<p class="does"><b>What it does:</b> waits up to 10 seconds, but moves on <b>as soon as</b> the message appears. If it never appears, the test fails with <code>TimeoutException</code>. Another common one: <code>elementToBeClickable</code>.</p>
+
+<h2>7. Special situations</h2>
+<h3>Dropdown</h3>
+<pre><code>Select country = new Select(driver.findElement(By.id("country")));
+country.selectByVisibleText("India");</code></pre>
+<p class="does"><b>What it does:</b> wraps the dropdown in the <code>Select</code> class and picks the option by the text you see. Other ways: <code>selectByValue</code>, <code>selectByIndex</code>. Works only for dropdowns made with the <code>&lt;select&gt;</code> tag.</p>
+<h3>Alert popup</h3>
+<pre><code>Alert alert = driver.switchTo().alert();
+alert.accept();</code></pre>
+<p class="does"><b>What it does:</b> moves control to the browser popup and clicks OK. Use <code>dismiss()</code> for Cancel, <code>getText()</code> to read the message.</p>
+<h3>Frame (a page inside a page)</h3>
+<pre><code>driver.switchTo().frame("payFrame");
+driver.switchTo().defaultContent();</code></pre>
+<p class="does"><b>What it does:</b> go inside the frame to work with its elements, then come back to the main page.</p>
+<h3>New tab or window</h3>
+<pre><code>String main = driver.getWindowHandle();
+for (String h : driver.getWindowHandles()) driver.switchTo().window(h);</code></pre>
+<p class="does"><b>What it does:</b> each window has an ID called a handle. We save the main window's ID, then loop through all open windows and switch to them. Switch back with <code>driver.switchTo().window(main)</code>.</p>
+<h3>Mouse actions</h3>
+<pre><code>new Actions(driver).moveToElement(menu).perform();</code></pre>
+<p class="does"><b>What it does:</b> moves the mouse over an element (hover), for example to open a menu. <code>Actions</code> also does double-click, right-click and drag-and-drop. Always end with <code>perform()</code>.</p>
+<h3>Screenshot</h3>
+<pre><code>File shot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);</code></pre>
+<p class="does"><b>What it does:</b> takes a screenshot, normally saved when a test fails as proof.</p>
+
+<h2>8. TestNG: running and checking tests</h2>
+<p>Selenium only controls the browser. A test framework like <b>TestNG</b> (or JUnit) organizes tests and reports pass/fail.</p>
+<pre><code>public class LoginTest {
+  WebDriver driver;
+
+  @BeforeMethod
+  public void setUp() { driver = new ChromeDriver(); }
+
+  @Test
+  public void validLogin() {
+    driver.get("https://example.com/login");
+    // ... steps ...
+    Assert.assertEquals(driver.getTitle(), "Dashboard");
+  }
+
+  @AfterMethod
+  public void tearDown() { driver.quit(); }
+}</code></pre>
+<p class="does"><b>What it does:</b> <code>@BeforeMethod</code> runs before every test (open browser). <code>@Test</code> marks a test. <code>@AfterMethod</code> runs after every test (close browser). <code>Assert</code> compares actual and expected; if they differ, the test fails.</p>
+<div class="tw"><table>
+<tr><th>Annotation / term</th><th>Meaning</th></tr>
+<tr><td>@BeforeClass / @AfterClass</td><td>Run once before / after all tests in the class.</td></tr>
+<tr><td>@DataProvider</td><td>Runs the same test with many sets of data.</td></tr>
+<tr><td>testng.xml</td><td>File to choose and group which tests to run.</td></tr>
+<tr><td>Assert vs verify</td><td>Hard assert stops the test at first failure. Soft assert (<code>SoftAssert</code>) continues and reports all failures at the end.</td></tr>
+</table></div>
+
+<h2>9. Page Object Model (POM)</h2>
+<p>If every test has locators written inside it, one UI change means editing many tests. In <b>POM</b> each page gets its own class that holds its locators and actions. Tests only call these actions.</p>
+<pre><code>public class LoginPage {
+  WebDriver driver;
+  By user = By.id("username");
+  By pass = By.id("password");
+  By btn  = By.cssSelector("button[type='submit']");
+
+  public LoginPage(WebDriver driver) { this.driver = driver; }
+
+  public void login(String u, String p) {
+    driver.findElement(user).sendKeys(u);
+    driver.findElement(pass).sendKeys(p);
+    driver.findElement(btn).click();
+  }
+}</code></pre>
+<p class="does"><b>What it does:</b> the test now just writes <code>new LoginPage(driver).login("testuser","Pass@123");</code>. If the username id changes, you fix it in <b>one</b> place. Benefits: less repeated code, easy maintenance, tests are easy to read.</p>
+<h3>Typical project structure</h3>
+<pre><code>project/
+ ├─ pom.xml              (libraries)
+ ├─ testng.xml           (which tests to run)
+ └─ src/
+    ├─ main/java/pages/   LoginPage.java, HomePage.java
+    ├─ main/java/utils/   BrowserSetup, WaitUtils, ExcelReader
+    └─ test/java/tests/   LoginTest.java, SearchTest.java</code></pre>
+
+<h2>10. Java you must know for Selenium interviews</h2>
+<p>Interviewers ask Java along with Selenium. These topics come up most, shown with where you use them in automation.</p>
+<div class="tw"><table>
+<tr><th>Concept</th><th>Simple meaning</th><th>Where in automation</th></tr>
+<tr><td>Class and object</td><td>Class is a blueprint, object is a real thing made from it.</td><td><code>LoginPage</code> is a class, <code>new LoginPage(driver)</code> is an object.</td></tr>
+<tr><td>Encapsulation</td><td>Hide data, give access through methods.</td><td>Locators are <code>private</code> in a page class. Tests call public methods.</td></tr>
+<tr><td>Inheritance</td><td>A child class reuses the parent's code (<code>extends</code>).</td><td>All tests <code>extend BaseTest</code> to reuse browser setup and close.</td></tr>
+<tr><td>Polymorphism</td><td>One thing, many forms. Overloading: same method name, different parameters. Overriding: child changes the parent's method.</td><td><code>WebDriver driver = new ChromeDriver();</code> can later be Firefox with no other change.</td></tr>
+<tr><td>Abstraction</td><td>Show what it does, hide how.</td><td><code>WebDriver</code> is an interface. You call <code>click()</code> without knowing the browser internals.</td></tr>
+<tr><td>Interface vs abstract class</td><td>Interface: only the list of methods (a contract). Abstract class: some methods ready, some left to the child.</td><td><code>WebDriver</code>, <code>WebElement</code> are interfaces.</td></tr>
+<tr><td><code>==</code> vs <code>equals()</code></td><td><code>==</code> compares memory address. <code>equals()</code> compares the content of strings.</td><td>Comparing page text: use <code>equals()</code>.</td></tr>
+<tr><td>static, final</td><td>static: belongs to the class, not an object. final: cannot be changed.</td><td>A shared <code>static WebDriver</code>; constants like timeout values.</td></tr>
+<tr><td>Collections</td><td>List (ordered, duplicates allowed), Set (no duplicates), Map (key-value).</td><td><code>List&lt;WebElement&gt;</code> for many elements; Map for test data.</td></tr>
+<tr><td>Exceptions</td><td><code>try / catch / finally</code> handles errors. Checked: forced by compiler. Unchecked: at run time.</td><td>Handling <code>NoSuchElementException</code>; <code>finally</code> to close the browser.</td></tr>
+<tr><td>String methods</td><td><code>length, substring, contains, equals, equalsIgnoreCase, split, trim</code></td><td>Cleaning and checking page text.</td></tr>
+</table></div>
+<pre><code>public class BaseTest {
+  protected WebDriver driver;
+  @BeforeMethod public void setUp() { driver = new ChromeDriver(); }
+  @AfterMethod  public void tearDown() { driver.quit(); }
+}
+public class LoginTest extends BaseTest {
+  @Test public void validLogin() { driver.get("https://example.com"); }
+}</code></pre>
+<p class="does"><b>What it does:</b> <code>BaseTest</code> holds the common start and close code once. <code>LoginTest extends BaseTest</code> gets it for free (inheritance), so each new test class stays short.</p>
+
+<h2>11. More Selenium topics</h2>
+<h3>Checkbox and radio button</h3>
+<pre><code>WebElement box = driver.findElement(By.id("agree"));
+if (!box.isSelected()) box.click();</code></pre>
+<p class="does"><b>What it does:</b> ticks the checkbox only if it is not already ticked, so the test works every time.</p>
+<h3>Tables</h3>
+<pre><code>String cell = driver.findElement(By.xpath("//table[@id='orders']//tr[2]/td[3]")).getText();</code></pre>
+<p class="does"><b>What it does:</b> reads the text from row 2, column 3 of the table. To read all rows, use <code>findElements</code> on <code>//table[@id='orders']//tr</code> and loop.</p>
+<h3>File upload</h3>
+<pre><code>driver.findElement(By.id("resume")).sendKeys("/Users/me/resume.pdf");</code></pre>
+<p class="does"><b>What it does:</b> for an <code>&lt;input type="file"&gt;</code>, you do not click. You just send the file path as text.</p>
+<h3>JavaScript Executor</h3>
+<pre><code>JavascriptExecutor js = (JavascriptExecutor) driver;
+js.executeScript("arguments[0].scrollIntoView(true);", element);
+js.executeScript("arguments[0].click();", element);</code></pre>
+<p class="does"><b>What it does:</b> runs JavaScript inside the page. First line scrolls to the element. Second line clicks it using JavaScript, a last option when the normal click is blocked by another element.</p>
+<h3>Headless browser</h3>
+<pre><code>ChromeOptions options = new ChromeOptions();
+options.addArguments("--headless=new");
+WebDriver driver = new ChromeDriver(options);</code></pre>
+<p class="does"><b>What it does:</b> runs Chrome without showing a window. It is faster and is used on servers and CI machines.</p>
+<h3>New tab, cookies, relative locators (Selenium 4)</h3>
+<pre><code>driver.switchTo().newWindow(WindowType.TAB);
+driver.manage().deleteAllCookies();
+driver.findElement(with(By.tagName("input")).below(By.id("email")));</code></pre>
+<p class="does"><b>What it does:</b> opens a new tab and moves to it, clears all cookies (useful to start fresh), and finds an input that is <b>below</b> the email field. Relative locators find elements by their position.</p>
+<h3>Dynamic elements</h3>
+<ul>
+<li>If an id changes on each load (like <code>btn_8374</code>), use <code>//button[starts-with(@id,'btn_')]</code> or <code>contains()</code>.</li>
+<li>Prefer stable attributes: <code>data-testid</code>, <code>name</code>, visible text, or relationship to a nearby element.</li>
+<li>Elements that load late: use an explicit wait.</li>
+</ul>
+
+<h2>12. Common exceptions and fixes</h2>
+<div class="tw"><table>
+<tr><th>Exception</th><th>Why it happens</th><th>Fix</th></tr>
+<tr><td>NoSuchElementException</td><td>Element not found: wrong locator, or not loaded yet, or inside a frame.</td><td>Check the locator, add explicit wait, switch to frame.</td></tr>
+<tr><td>StaleElementReferenceException</td><td>The page refreshed and the saved element is old.</td><td>Find the element again before using it.</td></tr>
+<tr><td>ElementClickInterceptedException</td><td>Another element (popup, banner) covers the button.</td><td>Close the cover, wait for it to go, scroll, or use JS click.</td></tr>
+<tr><td>ElementNotInteractableException</td><td>Element is present but hidden or disabled.</td><td>Wait until it is visible or clickable.</td></tr>
+<tr><td>TimeoutException</td><td>Explicit wait condition never became true.</td><td>Check the condition and locator, increase time if needed.</td></tr>
+<tr><td>NoSuchFrameException / NoAlertPresentException</td><td>Wrong frame name, or no popup is open.</td><td>Check the frame, wait for the alert.</td></tr>
+<tr><td>SessionNotCreatedException</td><td>Browser and driver versions do not match.</td><td>Update the browser or driver (Selenium Manager usually handles it).</td></tr>
+</table></div>
+
+<h2>13. Building a real framework</h2>
+<h3>Data-driven testing with TestNG</h3>
+<pre><code>@DataProvider(name = "logins")
+public Object[][] data() {
+  return new Object[][] { {"user1","pass1"}, {"user2","wrong"} };
+}
+@Test(dataProvider = "logins")
+public void loginTest(String u, String p) { /* use u and p */ }</code></pre>
+<p class="does"><b>What it does:</b> the test runs once for each row of data. Real projects read data from Excel (Apache POI library), CSV or JSON files.</p>
+<h3>Parts of a good framework</h3>
+<div class="tw"><table>
+<tr><th>Part</th><th>Tool or idea</th></tr>
+<tr><td>Build and libraries</td><td>Maven or Gradle (<code>pom.xml</code>)</td></tr>
+<tr><td>Test runner</td><td>TestNG or JUnit</td></tr>
+<tr><td>Design pattern</td><td>Page Object Model</td></tr>
+<tr><td>Config</td><td><code>config.properties</code> file for URL, browser, timeouts. Never hard-code them.</td></tr>
+<tr><td>Reports</td><td>Extent Reports, Allure, or TestNG's default report. Add a screenshot on failure.</td></tr>
+<tr><td>Logging</td><td>Log4j, to see what happened step by step.</td></tr>
+<tr><td>Cross-browser and parallel</td><td>Pass browser name as a parameter. TestNG <code>parallel</code> option or Selenium Grid.</td></tr>
+<tr><td>Version control</td><td>Git and GitHub</td></tr>
+<tr><td>CI/CD</td><td>Jenkins or GitHub Actions run the suite automatically on each build or every night.</td></tr>
+</table></div>
+<h3>BDD with Cucumber (just the idea)</h3>
+<p>BDD means writing tests in plain English that business people can read. Steps are then connected to Selenium code.</p>
+<pre><code>Feature: Login
+  Scenario: Valid user logs in
+    Given I am on the login page
+    When I enter valid username and password
+    Then I should see the dashboard</code></pre>
+<p class="does"><b>What it does:</b> this is Gherkin syntax: <b>Given</b> (starting point), <b>When</b> (action), <b>Then</b> (expected result). Each line matches a Java method called a step definition.</p>
+
+<h2>14. Flaky tests</h2>
+<p>A <b>flaky test</b> passes sometimes and fails sometimes, without any code change. It destroys trust in automation.</p>
+<ul>
+<li><b>Common causes:</b> wrong or missing waits, tests that depend on each other, shared or old test data, unstable locators, slow environment, popups appearing at random.</li>
+<li><b>Fixes:</b> use explicit waits, make every test independent, create fresh data for each test, use stable locators, retry only as a last option.</li>
+</ul>
+
+<h2>15. Selenium vs Playwright vs Cypress</h2>
+<div class="tw"><table>
+<tr><th></th><th>Selenium</th><th>Playwright</th><th>Cypress</th></tr>
+<tr><td>Languages</td><td>Java, Python, C#, JS and more</td><td>JS/TS, Python, Java, C#</td><td>JavaScript / TypeScript only</td></tr>
+<tr><td>Browsers</td><td>Chrome, Firefox, Edge, Safari</td><td>Chromium, Firefox, WebKit</td><td>Chrome family, Firefox</td></tr>
+<tr><td>Waiting</td><td>You add waits yourself</td><td>Built-in auto-wait</td><td>Built-in auto-retry</td></tr>
+<tr><td>Speed and stability</td><td>Slower, more setup</td><td>Fast, stable</td><td>Fast, runs inside the browser</td></tr>
+<tr><td>Best known for</td><td>Oldest, biggest community, most jobs</td><td>Modern, multi-tab, API and UI together</td><td>Developer-friendly UI test runner</td></tr>
+</table></div>
+<p>Tip: learn Selenium well first. The ideas (locators, waits, POM, assertions) are the same in the other two, so they are quick to pick up later.</p>
+
+<h2>16. Quick interview answers</h2>
+<ul class="qa">
+<li><b>What is Selenium?</b> Free open-source tool to automate web browsers. It does not support desktop or mobile apps (mobile uses Appium).</li>
+<li><b>findElement vs findElements?</b> One element (error if missing) vs a list (empty if missing).</li>
+<li><b>driver.close() vs driver.quit()?</b> <code>close</code> closes the current window. <code>quit</code> closes all windows and ends the session.</li>
+<li><b>Which locator do you prefer?</b> id first, then CSS, then relative XPath.</li>
+<li><b>XPath vs CSS?</b> XPath can find by text and go to parent elements. CSS is usually faster and simpler.</li>
+<li><b>Implicit vs explicit wait?</b> Implicit is global for all elements. Explicit waits for one condition on one element.</li>
+<li><b>How do you handle dynamic elements whose id changes?</b> Use <code>contains()</code> or <code>starts-with()</code> in XPath, or use another stable attribute.</li>
+<li><b>What is POM?</b> A design pattern: one class per page holding its locators and actions.</li>
+<li><b>Challenges of automation?</b> Changing UI, slow or flaky pages, wrong waits, test data problems.</li>
+<li><b>Which tests would you automate first?</b> Repeated and stable ones: smoke and regression tests of main flows.</li>
+<li><b>What are the limitations of Selenium?</b> Only web apps, no built-in reports, no image or captcha handling, needs waits and extra libraries.</li>
+<li><b>How do you handle StaleElementReferenceException?</b> Find the element again after the page refreshes.</li>
+<li><b>What is a flaky test and how do you fix it?</b> A test that passes and fails randomly. Fix waits, locators and test data.</li>
+<li><b>How do you run tests in parallel or on many browsers?</b> TestNG parallel execution or Selenium Grid.</li>
+<li><b>What is headless mode?</b> Running the browser without a visible window, faster and used in CI.</li>
+<li><b>How do you handle a file upload?</b> <code>sendKeys</code> with the file path on the <code>input type="file"</code> element.</li>
+<li><b>Overloading vs overriding?</b> Overloading: same method name, different parameters, in one class. Overriding: child class gives a new body to a parent method.</li>
+<li><b>Why is WebDriver an interface?</b> So the same code can work for any browser class (Chrome, Firefox) that implements it.</li>
+<li><b>What framework did you use or know?</b> Data-driven TestNG + Maven + Page Object Model + reports + Git, run through Jenkins.</li>
+<li><b>Selenium vs Playwright?</b> Playwright has built-in waiting and is faster; Selenium has the bigger community and more language support.</li>
+</ul>
+</main>
+</body>
+</html>
